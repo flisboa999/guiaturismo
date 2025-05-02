@@ -16,7 +16,7 @@ exports.sendMessage = functions.https.onRequest(async (req, res) => { // Cria um
   res.set("Access-Control-Allow-Headers", "Content-Type"); // Permite o envio do cabeçalho Content-Type (para especificar o formato dos dados)
 
   if (req.method === "OPTIONS") { // Se a requisição for do tipo OPTIONS (checagem de permissão)
-    res.status(204).send(""); // Envia resposta vazia com status 204 (No Content)
+    res.status(204).send(""); // Envia uma resposta vazia com status 204 (No Content)
     return; // Para a execução da função aqui
   }
 
@@ -28,17 +28,17 @@ exports.sendMessage = functions.https.onRequest(async (req, res) => { // Cria um
       return; // Para a execução
     }
 
-    const result = await model.generateContent(prompt); // Envia o texto para a API Gemini e espera a resposta
+    const result = await model.generateContent(prompt); // Chama a API Gemini para gerar conteúdo com base no prompt
     const response = result.response.text(); // Extrai o texto da resposta do Gemini
 
-    await db.collection("messages").add({  // Adiciona a mensagem e a resposta ao Firestore (banco de dados)
+    // Optional: Store the conversation/prompt in Firestore
+    await db.collection("messages").add({ // Adiciona a mensagem e a resposta ao Firestore (banco de dados)
       prompt: prompt, // Armazena a mensagem do usuário
       response: response, // Armazena a resposta do Gemini
       timestamp: new Date(), // Armazena a data e hora
     });
 
     res.send({ response: response }); // Envia a resposta do Gemini de volta para o usuário
-    
   } catch (error) { // Se ocorrer algum erro no bloco try
     console.error("Erro ao gerar resposta:", error); // Imprime o erro no console do servidor
     res.status(500).send({ error: "Falha ao gerar resposta." }); // Envia erro 500 (Internal Server Error)
