@@ -1,19 +1,46 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+const { GoogleGenerativeAI } = require("@google/generative-ai"); // Importa a biblioteca do Google Generative AI para usar o Gemini
+const functions = require("firebase-functions"); // Importa o Firebase Functions para criar Funções de Nuvem
+const { initializeApp } = require("firebase-admin/app"); // Importa a função initializeApp do Firebase Admin SDK
+const { getFirestore } = require("firebase-admin/firestore"); // Importa a função getFirestore do Firebase Admin SDK
 
-const {onRequest} = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
+initializeApp(); // Inicializa o Firebase Admin SDK
+const db = getFirestore(); // Obtém uma conexão com o Firestore
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+// Replace with your actual Gemini API key
+const genAI = new GoogleGenerativeAI("YOUR_GEMINI_API_KEY"); // Cria uma instância do Gemini com a sua chave de API
+const model = genAI.getGenerativeModel({ model: "gemini-pro" }); // Seleciona o modelo Gemini Pro
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+exports.sendMessage = functions.https.onRequest(async (req, res) => { // Cria uma Função de Nuvem que responde a requisições HTTP
+  res.set("Access-Control-Allow-Origin", "*"); // Permite requisições de qualquer site (em desenvolvimento; restrinja em produção)
+  res.set("Access-Control-Allow-Methods", "POST, OPTIONS"); // Define quais métodos HTTP são permitidos (POST para enviar mensagem, OPTIONS para checagem de permissões)
+  res.set("Access-Control-Allow-Headers", "Content-Type"); // Permite o envio do cabeçalho Content-Type (para especificar o formato dos dados)
+
+  if (req.method === "OPTIONS") { // Se a requisição for do tipo OPTIONS (checagem de permissão)
+    res.status(204).send(""); // Envia resposta vazia com status 204 (No Content)
+    return; // Para a execução da função aqui
+  }
+
+  try { // Tenta executar o código abaixo; se der erro, vai para o catch
+    const { prompt } = req.body; // Pega o texto da mensagem enviada pelo usuário
+
+    if (!prompt) { // Se o texto da mensagem estiver vazio
+      res.status(400).send({ error: "Prompt é obrigatório." }); // Envia erro 400 (Bad Request)
+      return; // Para a execução
+    }
+
+    const result = await model.generateContent(prompt); // Envia o texto para a API Gemini e espera a resposta
+    const response = result.response.text(); // Extrai o texto da resposta do Gemini
+
+    await db.collection("messages").add({  // Adiciona a mensagem e a resposta ao Firestore (banco de dados)
+      prompt: prompt, // Armazena a mensagem do usuário
+      response: response, // Armazena a resposta do Gemini
+      timestamp: new Date(), // Armazena a data e hora
+    });
+
+    res.send({ response: response }); // Envia a resposta do Gemini de volta para o usuário
+    
+  } catch (error) { // Se ocorrer algum erro no bloco try
+    console.error("Erro ao gerar resposta:", error); // Imprime o erro no console do servidor
+    res.status(500).send({ error: "Falha ao gerar resposta." }); // Envia erro 500 (Internal Server Error)
+  }
+});
