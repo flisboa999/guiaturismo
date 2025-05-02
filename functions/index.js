@@ -9,6 +9,13 @@ const {getFirestore} = require("firebase-admin/firestore"); // Importa a funçã
 initializeApp(); // Inicializa o Firebase Admin SDK
 const db = getFirestore(); // Obtém uma conexão com o Firestore
 
+const geminiApiKey = functions.config().gemini.key;
+
+if (!geminiApiKey) {
+  throw new Error("A chave da API do Gemini não foi definida. Use: firebase functions:config:set gemini.key=\"SUA_CHAVE\"");
+}
+
+
 // Replace with your actual Gemini API key
 const genAI = new GoogleGenerativeAI("YOUR_GEMINI_API_KEY"); // Cria uma instância do Gemini com a sua chave de API
 const model = genAI.getGenerativeModel({model: "gemini-pro"}); // Seleciona o modelo Gemini Pro
@@ -47,3 +54,5 @@ exports.sendMessage = functions.https.onRequest(async (req, res) => { // Cria um
     res.status(500).send({error: "Falha ao gerar resposta."}); // Envia erro 500 (Internal Server Error)
   }
 });
+
+
