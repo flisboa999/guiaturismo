@@ -12,12 +12,12 @@ const model = genAI.getGenerativeModel({ model: "gemini-pro" }); // Seleciona o 
 
 exports.sendMessage = functions.https.onRequest(async (req, res) => { // Cria uma Função de Nuvem que responde a requisições HTTP
   res.set("Access-Control-Allow-Origin", "*"); // Permite requisições de qualquer site (em desenvolvimento; restrinja em produção)
-  res.set("Access-Control-Allow-Methods", "POST, OPTIONS"); // Define quais métodos HTTP são permitidos (POST para enviar mensagem, OPTIONS para checagem de permissões)
-  res.set("Access-Control-Allow-Headers", "Content-Type"); // Permite o envio do cabeçalho Content-Type (para especificar o formato dos dados)
+  res.set("Access-Control-Allow-Methods", "POST, OPTIONS"); // Define quais métodos HTTP são permitidos (POST e OPTIONS)
+  res.set("Access-Control-Allow-Headers", "Content-Type"); // Permite o envio do cabeçalho Content-Type
 
   if (req.method === "OPTIONS") { // Se a requisição for do tipo OPTIONS (checagem de permissão)
-    res.status(204).send(""); // Envia uma resposta vazia com status 204 (No Content)
-    return; // Para a execução da função aqui
+    res.status(204).send(""); // Envia resposta vazia com status 204 (No Content)
+    return; // Para a execução da função aqui - TESTE DE PUSH
   }
 
   try { // Tenta executar o código abaixo; se der erro, vai para o catch
