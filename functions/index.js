@@ -9,10 +9,10 @@ const {getFirestore} = require("firebase-admin/firestore"); // Importa a funçã
 initializeApp(); // Inicializa o Firebase Admin SDK
 const db = getFirestore(); // Obtém uma conexão com o Firestore
 
-const geminiApiKey = functions.config().gemini.key;
+const geminiApiKey = process.env.GEMINI_API_KEY;
 
 if (!geminiApiKey) {
-  throw new Error("A chave da API do Gemini não foi definida. Use: firebase functions:config:set gemini.key=\"SUA_CHAVE\"");
+  throw new Error("A chave da API do Gemini não foi definida no arquivo .env");
 }
 
 
