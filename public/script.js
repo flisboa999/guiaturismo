@@ -1,7 +1,7 @@
 const chatLog = document.getElementById('chat-log');
 const promptInput = document.getElementById('prompt-input');
 const sendButton = document.getElementById('send-button');
-const apiUrl = '<YOUR_CLOUD_FUNCTIONS_URL>';  // **Replace this with your Cloud Function URL**
+const apiUrl = 'https://sendmessage-qcaswmjura-uc.a.run.app';  // **Replace this with your Cloud Function URL**
 
 sendButton.addEventListener('click', sendMessage);
 promptInput.addEventListener('keypress', function(event) {
