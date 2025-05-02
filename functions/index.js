@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
 
+require('dotenv').config();
+
 
 const {GoogleGenerativeAI} = require("@google/generative-ai"); // Importa a biblioteca do Google Generative AI para usar o Gemini
 const functions = require("firebase-functions"); // Importa o Firebase Functions para criar Funções de Nuvem
@@ -17,7 +19,7 @@ if (!geminiApiKey) {
 
 
 // Replace with your actual Gemini API key
-const genAI = new GoogleGenerativeAI("YOUR_GEMINI_API_KEY"); // Cria uma instância do Gemini com a sua chave de API
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY); // Cria uma instância do Gemini com a sua chave de API
 const model = genAI.getGenerativeModel({model: "gemini-pro"}); // Seleciona o modelo Gemini Pro
 
 exports.sendMessage = functions.https.onRequest(async (req, res) => { // Cria uma Função de Nuvem que responde a requisições HTTP
