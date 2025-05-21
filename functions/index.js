@@ -1,28 +1,32 @@
 /* eslint-disable max-len */
 
-require('dotenv').config();
-
-
 const {GoogleGenerativeAI} = require("@google/generative-ai"); // Importa a biblioteca do Google Generative AI para usar o Gemini
 const functions = require("firebase-functions"); // Importa o Firebase Functions para criar Funções de Nuvem
 const {initializeApp} = require("firebase-admin/app"); // Importa a função initializeApp do Firebase Admin SDK
 const {getFirestore} = require("firebase-admin/firestore"); // Importa a função getFirestore do Firebase Admin SDK
 
 initializeApp(); // Inicializa o Firebase Admin SDK
-const db = getFirestore(); // Obtém uma conexão com o Firestore
 
-const geminiApiKey = process.env.GEMINI_API_KEY;
+const db = getFirestore(); // Obtém uma conexão com o Firestore - banco de dados
 
+// Requisição da chave da API Gemini é feita diretamente ao servidor do Firebase / Google
+// Também é possível setar a chave da API em uma varíavel local .env , recomendado para ambiente de desenvolvimento 
+// Usamos functions.config().gemini.key para produção, para usar localmente em desenvolvimento use: require('dotenv').config(); + process.env.GEMINI_API_KEY;
+const geminiApiKey = functions.config.gemini.key();
+
+
+// Levanta novo erro caso não encontre a chave API Gemini
 if (!geminiApiKey) {
-  throw new Error("A chave da API do Gemini não foi definida no arquivo .env");
+  throw new Error("A Chave API do Gemini não foi localizada, verifique variável de ambiente .env ou via CLI firebase functions:config:get");
 }
 
-
-// Replace with your actual Gemini API key
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY); // Cria uma instância do Gemini com a sua chave de API
+const genAI = new GoogleGenerativeAI(gemimniApiKey); // Cria uma instância do Gemini com a sua chave de API
 const model = genAI.getGenerativeModel({model: "gemini-pro"}); // Seleciona o modelo Gemini Pro
 
+
+// Utiliza
 exports.sendMessage = functions.https.onRequest(async (req, res) => { // Cria uma Função de Nuvem que responde a requisições HTTP
+
   res.set("Access-Control-Allow-Origin", "*"); // Permite requisições de qualquer site (em desenvolvimento; restrinja em produção)
   res.set("Access-Control-Allow-Methods", "POST, OPTIONS"); // Define quais métodos HTTP são permitidos (POST e OPTIONS)
   res.set("Access-Control-Allow-Headers", "Content-Type"); // Permite o envio do cabeçalho Content-Type
