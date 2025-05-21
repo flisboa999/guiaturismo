@@ -5,6 +5,7 @@ const functions = require("firebase-functions"); // Importa o Firebase Functions
 const {initializeApp} = require("firebase-admin/app"); // Importa a função initializeApp do Firebase Admin SDK
 const {getFirestore} = require("firebase-admin/firestore"); // Importa a função getFirestore do Firebase Admin SDK
 const {defineSecret} = require("firebase-functions/params"); // Importa a função de chaves secretas do Firebase
+const {onCall} = require("firebase-functions/v2/https");
 
 initializeApp(); // Inicializa o Firebase Admin SDK
 
@@ -15,13 +16,13 @@ const db = getFirestore(); // Obtém uma conexão com o Firestore - banco de dad
 // Usamos functions.config().gemini.key para produção, para usar localmente em desenvolvimento use: require('dotenv').config(); + process.env.GEMINI_API_KEY;
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
 
-exports.sendMessage = functions
+exports.sendMessage = onCall(
 
     //Informa que a função sendMessage deve usar chave API do Gemini
-    .runWith({secrets:{geminiApiKey}})
+    {secrets:["GEMINI_API_KEY"]},
     
     //onCall em vez de onRequest simplifica o processo
-    .https.onCall(async (data, context) => {
+    async (data, context) => {
 
       //data - o objeto enviado pelo cliente
       //context.auth - contém informações do usuário se ele estiver logado.
