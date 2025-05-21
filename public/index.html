@@ -1,19 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini Chatbot</title>
-    <link rel="stylesheet" href="/style.css">
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configura para que a página seja responsiva em dispositivos móveis -->
+    <title>Gemini Chatbot</title> <!-- Título da aba do navegador -->
+    <link rel="stylesheet" href="/style.css"> <!-- Importa o arquivo de estilos CSS -->
 </head>
 <body>
+    <!-- Importa a configuração do Firebase (como autenticação e funções) -->
+    <script type="module" src="./firebase-setup.js"></script>
+
+    <!-- Importa o script principal com a lógica do chatbot -->
+    <script src="/script.js"></script>
+
+    <!-- Contêiner principal do chat -->
     <div class="chat-container">
+
+        <!-- Onde as mensagens do chat serão exibidas -->
         <div id="chat-log"></div>
+
+        <!-- Área onde o usuário digita a pergunta -->
         <div class="input-area">
+            
+            <!-- Campo de texto para digitar a pergunta -->
             <input type="text" id="prompt-input" placeholder="Pergunte-me algo...">
+            
+            <!-- Botão que envia a pergunta -->
             <button id="send-button">Enviar</button>
         </div>
     </div>
-    <script src="/script.js"></script>
 </body>
 </html>
