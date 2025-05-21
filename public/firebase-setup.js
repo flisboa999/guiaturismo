@@ -19,3 +19,6 @@ measurementId: "G-KM5Q55VW3Y"
 // Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+
+// Exportar o app para usar no script.js
+export { app };

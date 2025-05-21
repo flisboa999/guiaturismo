@@ -134,6 +134,7 @@ async function sendMessageToGemini() {
 // Essa função recebe dois argumentos: quem enviou (ex., "Você", "Gemini") e a mensagem (string)
 // Cria um novo `div`, aplica estilo e adiciona ao chatlog `chatLog`.
 function appendMessage(sender, message) {
+    
     // Cria um novo elemento div para armazenar a mensagem
     const messageElement = document.createElement('div');
 
