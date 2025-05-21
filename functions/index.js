@@ -15,19 +15,6 @@ const db = getFirestore(); // Obtém uma conexão com o Firestore - banco de dad
 // Usamos functions.config().gemini.key para produção, para usar localmente em desenvolvimento use: require('dotenv').config(); + process.env.GEMINI_API_KEY;
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
 
-//debug 
-console.log(geminiApiKey);
-
-
-// Levanta erro caso não encontre a chave API Gemini
-if (!geminiApiKey) {
-  throw new Error("A Chave API do Gemini não foi localizada, verifique variável de ambiente .env ou via CLI firebase functions:config:get");
-}
-
-const genAI = new GoogleGenerativeAI(geminiApiKey); // Cria uma instância do Gemini com a sua chave de API
-const model = genAI.getGenerativeModel({model: "gemini-pro"}); // Seleciona o modelo Gemini Pro
-
-
 exports.sendMessage = functions
 
     //Informa que a função sendMessage deve usar chave API do Gemini
