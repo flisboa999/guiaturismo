@@ -5,18 +5,9 @@
 // O serviço de funções da Firebase
 // `firebase.functions()` é utilizada para a SDK Firebase versão 8 (compat library).
 // Se estiver usando a Firebase SDK versão 9 ou mais nova (modular), deve-se usar:
-// teste
-// teste
-// teste
-// teste
-// teste
-// teste
-// teste
-// teste
-// teste
 
 
-import { getFunctions, httpsCallable } from "firebase/functions";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-functions.js";
 
 const functions = getFunctions(); // Instancia da Firebase Functions - versão 1
 
