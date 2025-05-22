@@ -138,12 +138,12 @@ function appendMessage(sender, message) {
     // Cria um novo elemento div para armazenar a mensagem
     const messageElement = document.createElement('div');
 
-    // Adiciona uma classe CSS para personalizar aparência (definida no `style.css`).
+    // Adiciona uma classe CSS para personalizar aparência (definida em `style.css`).
     messageElement.classList.add('message');
 
     // Ajustar o conteúdo do elemento da mensagem.
     // Usa-se `innerHTML` para permitir HTML simples como `<strong>`.
-    // `<strong>${sender}:</strong>` faz o nome do 'sender' (quem enviou) ficar negrito.
+    // `<strong>${sender}:</strong>` faz o nome de quem enviou (sender) ficar em negrito.
     // `message.replace(/\n/g, '<br>')` Converte caracteres de nova linha (\n) do Gemini
     // em quebras de linha HTML (<br>) para serem renderizados corretamente.
     // IMPORTANTE: Cuidado com `innerHTML` se o conteúdo de 'message' pode vir de
@@ -177,13 +177,13 @@ function updateLastGeminiMessage(newMessage) {
             // Se positivo, atualiza o seu conteúdo com a nova mensagem do Gemini.
             lastMessageElement.innerHTML = `<strong>Gemini:</strong> ${newMessage.replace(/\n/g, '<br>')}`;
         } else {
-            // Fallback: If the last message wasn't the expected placeholder (e.g., user typed
-            // something very quickly, or some other edge case), then just append the new message
-            // as a fresh Gemini message.
+            // Plano B: Se a última mensagem não veio no formato esperado (Ex. usuário escrever rápido
+            // demais, ou outro caso extremo), então a nova mensagem é adicionada (Append)
+            // como uma mensagem nova do Gemini
             appendMessage('Gemini', newMessage);
         }
     }
-    // Ensure the chat log scrolls to the bottom after updating the message.
+    // Fazer o scroll do chatlog até o final depois de atualizar a mensagem
     chatLog.scrollTop = chatLog.scrollHeight;
 }
 
