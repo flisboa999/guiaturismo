@@ -89,7 +89,7 @@ async function sendMessageToGemini() {
         // Deve-se referenciar a função 'sendMessage' na Cloud da Firebase para poder chamá-la.
         // Este nome deve ser exatamente o mesmo que foi exportado no backend da Firebase
         // (Exemplo: `exports.sendMessage = functions.https.onCall(...)`).
-        const callSendMessage = functions.httpsCallable('sendMessage');
+        const callSendMessage = httpsCallable(functions, 'sendMessage');
 
         // Agora chama a função. O argumento é um objeto.
         // O backend da Firebase vai receber esse objeto como o seu parâmetro `data`.
