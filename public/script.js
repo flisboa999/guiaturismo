@@ -6,10 +6,11 @@
 // `firebase.functions()` é utilizada para a SDK Firebase versão 8 (compat library).
 // Se estiver usando a Firebase SDK versão 9 ou mais nova (modular), deve-se usar:
 
+import { app } from "./firebase-setup.js";
 
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-functions.js";
 
-const functions = getFunctions(); // Instancia da Firebase Functions - versão 1
+const functions = getFunctions(app); // Instancia da Firebase Functions - versão 1
 
 /*
 const functions = firebase.functions(); // Instancia da Firebase Functions - versão 2 - validar qual funciona
@@ -69,8 +70,8 @@ async function sendMessageToGemini() {
 
     // 4b. Atualizar a UI (interface do usuário) - Exibir a mensagem do usuário e desabilitar os inputs (entradas)
     // -------------------------------------------------------
-    // Exibe a mensagem do usuário diretamente no chat log
-    appendMessage('Você', userMessage); // 'Você' means 'You' in Portuguese
+    // Adiciona (append) a mensagem do usuário diretamente no chat log
+    appendMessage('Você', userMessage); //
 
     // Limpar o campo de input , uma vez que a mensagem foi enviada (ao chat log).
     promptInputElement.value = '';
