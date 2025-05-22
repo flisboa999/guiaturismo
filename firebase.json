@@ -10,10 +10,6 @@
     ],
     "rewrites": [
       {
-        "source": "/api/**",
-        "function": "sendMessage"
-      },
-      {
         "source": "**",
         "destination": "/index.html"
       }
