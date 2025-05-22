@@ -1,6 +1,6 @@
 // Importar as funções necessárias dos SDKs da Firebase
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-analytics.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
 // Documentação de referência para libs disponíveis
 // https://firebase.google.com/docs/web/setup#available-libraries
 

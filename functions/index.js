@@ -12,8 +12,6 @@ initializeApp(); // Inicializa o Firebase Admin SDK
 const db = getFirestore(); // Obtém uma conexão com o Firestore - banco de dados
 
 // Requisição da chave da API Gemini é feita diretamente ao servidor do Firebase / Google
-// Também é possível setar a chave da API em uma varíavel local .env , recomendado para ambiente de desenvolvimento 
-// Usamos functions.config().gemini.key para produção, para usar localmente em desenvolvimento use: require('dotenv').config(); + process.env.GEMINI_API_KEY;
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
 
 exports.sendMessage = onCall(

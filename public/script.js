@@ -8,7 +8,7 @@
 
 import { app } from "./firebase-setup.js";
 
-import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-functions.js";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 
 const functions = getFunctions(app); // Instancia da Firebase Functions - versão 1
 
