@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
 
 const {GoogleGenerativeAI} = require("@google/generative-ai"); // Importa a biblioteca do Google Generative AI para usar o Gemini
-const functions = require("firebase-functions"); // Importa o Firebase Functions para criar Funções de Nuvem
+const { onCall, HttpsError } = require("firebase-functions/v2/https"); // Importa o Firebase Functions para criar Funções de Nuvem
 const {initializeApp} = require("firebase-admin/app"); // Importa a função initializeApp do Firebase Admin SDK
 const {getFirestore} = require("firebase-admin/firestore"); // Importa a função getFirestore do Firebase Admin SDK
 const {defineSecret} = require("firebase-functions/params"); // Importa a função de chaves secretas do Firebase
-const {onCall} = require("firebase-functions/v2/https");
+
 
 initializeApp(); // Inicializa o Firebase Admin SDK
 
@@ -37,7 +37,7 @@ exports.sendMessage = onCall(
 
       if (!apiKey) {
         console.error("Chave da API do Gemini não está configurada");
-        throw new functions.https.HttpsError('internal', 'erro de configuração do servidor: Chave da API ausente.');
+        throw new HttpsError('internal', 'erro de configuração do servidor: Chave da API ausente.');
       };
 
       // 1. Receber Input do usuário
@@ -56,7 +56,7 @@ exports.sendMessage = onCall(
           console.error("Entrada inválida recebida (esperava 'prompt'):", data);
           
           // Levanta o erro HttpsError para facilitar a apuração de erros do lado do usuário (client-side)
-          throw new functions.https.HttpsError('invalid-argument', 'A mensagem (prompt) não pode estar vazia.');
+          throw new HttpsError('invalid-argument', 'A mensagem (prompt) não pode estar vazia.');
       }
 
       // Print prompt recebido para debugging
@@ -88,13 +88,13 @@ exports.sendMessage = onCall(
           // Garantir que a resposta (response) e text() são válidas antes de chamar
           if (!response) {
               console.error("Resposta da API Gemini inválida ou vazia.");
-              throw new functions.https.HttpsError('internal', 'Resposta inválida da API Gemini.');
+              throw new HttpsError('internal', 'Resposta inválida da API Gemini.');
           }
 
           const geminiOutput = response.text();
           if (typeof geminiOutput !== 'string') {
                 console.error("Texto da resposta da API Gemini não é uma string:", geminiOutput);
-                throw new functions.https.HttpsError('internal', 'Formato de resposta inesperado da API Gemini.');
+                throw new HttpsError('internal', 'Formato de resposta inesperado da API Gemini.');
           }
 
           console.log("Resposta da API Gemini recebida:", geminiOutput);
@@ -117,7 +117,7 @@ exports.sendMessage = onCall(
           if (error instanceof functions.https.HttpsError) {
               throw error; // Relança o erro original, já está no formato esperado
           }
-          throw new functions.https.HttpsError(
+          throw new HttpsError(
             'unknown', // Código de erro genérico
             'Falha ao processar sua mensagem com o Gemini.', // Mensagem amigável para o usuário
             error.message); // Mantém a mensagem original do erro para referência
