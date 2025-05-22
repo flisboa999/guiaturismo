@@ -26,6 +26,10 @@ exports.sendMessage = onCall(
 
       //data - o objeto enviado pelo cliente
       //context.auth - contém informações do usuário se ele estiver logado.
+      
+      console.log("Tentativa de receber data");
+      console.log("Printando data: ", data);
+      console.log("Printando typeof data: ", (typeof data));
 
       //Aqui é onde de fato expõe o valor da Chave API Gemini
       const apiKey = geminiApiKey.value();
@@ -41,6 +45,11 @@ exports.sendMessage = onCall(
       // Combina com o id="prompt-input" do HTML, e presume-se que o Javascript do lado do client vai enviar como data.prompt
       
       const userInput = data.prompt;
+
+      console.log("Declarou variavel userInput");
+      console.log("Printando userInput: ", data);
+      console.log("Printando typeof userInput: ", (typeof userInput));
+
 
       // 2. Validação básica do Input
       if (!userInput || typeof userInput !== 'string' || userInput.trim() === '') {
