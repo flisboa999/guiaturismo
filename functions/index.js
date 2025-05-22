@@ -47,7 +47,7 @@ exports.sendMessage = onCall(
       const userInput = data.prompt;
 
       console.log("Declarou variavel userInput");
-      console.log("Printando userInput: ", data);
+      console.log("Printando userInput: ", userInput);
       console.log("Printando typeof userInput: ", (typeof userInput));
 
 
