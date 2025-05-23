@@ -1,4 +1,3 @@
-
 // 1. Inicializar o cliente de Funções da Firebase
 // ---------------------------------------------
 // Para poder executar nossa função em nuvem (cloud function), precisamos referenciar 
@@ -11,10 +10,6 @@ import { app } from "./firebase-setup.js";
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 
 const functions = getFunctions(app, "us-central1"); // Instancia da Firebase Functions - versão 1
-
-/*
-const functions = firebase.functions(); // Instancia da Firebase Functions - versão 2 - validar qual funciona
-*/
 
 // 2. Referência aos elementos HTML
 // ---------------------------------------
@@ -43,6 +38,7 @@ sendButton.addEventListener('click', sendMessageToGemini);
 
 // Quando uma tecla é apertada enquanto o elemento `promptInputElement` está focado:
 promptInputElement.addEventListener('keypress', function(event) {
+    
     // Checar se a tecla apertada foi "Enter".
     if (event.key === 'Enter') {
         // A função `sendMessageToGemini` também pode ser ativada apertando Enter.
@@ -59,6 +55,9 @@ async function sendMessageToGemini() {
     // ----------------------------------------------------
     // Pegar o texto do `promptInputElement` e aplicar a função `trim()`
     // para remover espaços em branco do início e fim da string
+
+
+
     const userMessage = promptInputElement.value.trim();
 
     // Se a mensagem estiver vazia após o trim, não faça mais nada
@@ -82,7 +81,7 @@ async function sendMessageToGemini() {
     sendButton.disabled = true;
 
     // Exibir uma mensagem enquanto gemini está processando
-    appendMessage('Gemini', 'Pensando...'); // 'Pensando...' means 'Thinking...'
+    appendMessage('Gemini', 'Pensando...');
 
     // 4c. Chamar a Função Cloud da Firebase
     // -----------------------------------
@@ -90,6 +89,9 @@ async function sendMessageToGemini() {
         // Deve-se referenciar a função 'sendMessage' na Cloud da Firebase para poder chamá-la.
         // Este nome deve ser exatamente o mesmo que foi exportado no backend da Firebase
         // (Exemplo: `exports.sendMessage = functions.https.onCall(...)`).
+
+        console.log("Payload que estou enviando: ", { prompt: userMessage });
+
         const callSendMessage = httpsCallable(functions, 'sendMessage');
 
         // Agora chama a função. O argumento é um objeto.
