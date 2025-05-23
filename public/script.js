@@ -2,7 +2,7 @@
 // ---------------------------------------------
 // Para poder executar nossa função em nuvem (cloud function), precisamos importar diversos
 // módulos diretamente da CDN (Content Distribution Network) da Firebase
-
+// teste teste
 // Imports das Funções em Nuvem (Cloud Functions)
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 
@@ -215,4 +215,30 @@ async function sendMessageChat (prompt) {
         dislikes: 0
     });
 }
+
+
+//8. Função que sincroniza em tempo real com as colleções do banco de dados da Firestore
+// Sempre que for adicionado um novo documento (mensagem) -> função é chamada automaticamente
+
+onSnapshot(chatsCollection, (snapshot) => {
+    // snapshot: contém todas as mudanças (mensagens, atualizações, deletes, etc)
+
+    snapshot.docChanges().forEach((change) => {
+
+        if (change.type === "added"){
+            // Estamos interessados nas novas mensagens (que são do tipo "added")
+            // Então, se uma mensagem for adicionada, executa o código abaixo
+
+            renderMessage(change.doc.id, change.doc.data());
+            // Invoca a função para mostrar a mensagem no chatlog
+            // Fornece os argumentos:
+            // 1. change.doc.id - o ID do documento na Firestore
+            // 2. change.doc.data() - os dados da mensagem (prompt, response, etc.)
+        }
+    });
+});
+        
+
+
+
 // Final de script.js
