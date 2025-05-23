@@ -1,14 +1,22 @@
 // 1. Inicializar o cliente de Funções da Firebase
 // ---------------------------------------------
-// Para poder executar nossa função em nuvem (cloud function), precisamos referenciar 
-// O serviço de funções da Firebase
-// `firebase.functions()` é utilizada para a SDK Firebase versão 8 (compat library).
-// Se estiver usando a Firebase SDK versão 9 ou mais nova (modular), deve-se usar:
+// Para poder executar nossa função em nuvem (cloud function), precisamos importar diversos
+// módulos diretamente da CDN (Content Distribution Network) da Firebase
 
-// Mantemos nossa configuração de 
-import { app } from "./firebase-setup.js";
+// Imports das Funções em Nuvem (Cloud Functions)
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
-const functions = getFunctions(app, "us-central1"); // Instancia da Firebase Functions - versão 1
+
+// Imports de banco de dados Firestore e timestamp
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"
+
+import { app } from "./firebase-setup.js"; // Importa o objeto do app Firebase, instanciado no arquivo firebase-setup
+
+const db = getFirestore(app); // Instancia banco de dados Firestore
+
+//Utilizada para todos reads/writes (leituras/gravações) no Banco de Dados
+const chatsCollection = collection(db,"chats"); // referência à coleção "chats" - Se existir aponta (pointer), se não existir Firebase cria automaticamente
+
+const functions = getFunctions(app, "us-central1"); // Instancia da Firebase Functions, recebe o objeto app de firebase-setup.js como argumento
 
 // 2. Referência aos elementos HTML
 // ---------------------------------------
@@ -188,4 +196,23 @@ function updateLastGeminiMessage(newMessage) {
     chatLog.scrollTop = chatLog.scrollHeight;
 }
 
+
+// 7. Função para gravar diretamente na Firestore
+// ----------------------------------------------------------------
+// Utilizada quando o usuário envia mensagem no chat global, sem o
+// processamento e a resposta da API Gemini, grava dados no Database
+// diretamente do frontend. P
+
+
+async function sendMessageChat (prompt) {
+    await addDoc (chatsCollection, {
+        prompt: prompt,
+        response:null,
+        timestamp: serverTimestamp(),
+        sessionId: "sess-" + Math.random().toString(36).substring(2,8),
+        userAgent: navigator.userAgent,
+        likes: 0,
+        dislikes: 0
+    });
+}
 // Final de script.js

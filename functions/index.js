@@ -10,7 +10,7 @@ initializeApp(); // Inicializa o Firebase Admin SDK
 
 const db = getFirestore(); // Obtém uma conexão com o Firestore - banco de dados
 
-// Requisição da chave da API Gemini é feita diretamente ao servidor do Firebase / Google
+// Requisição da chave da API Gemini é feita diretamente ao servidor do Firebase / Google com Secret Manager
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
 
 exports.sendMessage = onCall(
@@ -107,14 +107,14 @@ exports.sendMessage = onCall(
               console.error("Mensagem de erro:", error.message);
           }
 
-          // Dá uma mensagem de erro que seja legível e amigável ao usuário
-          // Se já for um erro do tipo HttpsError, relança ele; senão, cria (encapsula) um novo HttpsError com base no erro original
+          // Dá uma mensagem de erro que seja legível ao usuário
+          // Se já for um erro do tipo HttpsError, relança ; senão, cria (encapsula) um novo HttpsError com base no erro original
           if (error instanceof functions.https.HttpsError) {
               throw error; // Relança o erro original, já está no formato esperado
           }
           throw new HttpsError(
             'unknown', // Código de erro genérico
-            'Falha ao processar sua mensagem com o Gemini.', // Mensagem amigável para o usuário
+            'Falha ao processar sua mensagem com o Gemini.', // Mensagem de erro para o usuário
             error.message); // Mantém a mensagem original do erro para referência
       } 
   });

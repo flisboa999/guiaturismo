@@ -16,8 +16,10 @@ appId: "1:463725890721:web:c2f59f6c611d70b01834e0",
 measurementId: "G-KM5Q55VW3Y"
 };
 
-// Inicializar Firebase
+// Inicializar App Firebase
 const app = initializeApp(firebaseConfig);
+
+// Inicializar analytics
 const analytics = getAnalytics(app);
 
 // Exportar o app para usar no script.js
