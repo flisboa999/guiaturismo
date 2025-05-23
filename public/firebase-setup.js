@@ -4,7 +4,7 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebas
 // Documentação de referência para libs disponíveis
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Configuração do aplicativo Firebase - informações únicasYour web app's Firebase configuration
+// Configuração do aplicativo Firebase - informações únicas
 // A Chave API não é secreta, é uma ID pública de referência ao Aplicativo na lista de apps dos servidores Firebase / Google 
 const firebaseConfig = {
 apiKey: "AIzaSyCvlBh7SVIO_BALdf1mVpXlQgLLik1Cxj0",

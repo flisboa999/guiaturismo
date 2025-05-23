@@ -6,7 +6,6 @@ const {initializeApp} = require("firebase-admin/app"); // Importa a função ini
 const {getFirestore} = require("firebase-admin/firestore"); // Importa a função getFirestore do Firebase Admin SDK
 const {defineSecret} = require("firebase-functions/params"); // Importa a função de chaves secretas do Firebase
 
-
 initializeApp(); // Inicializa o Firebase Admin SDK
 
 const db = getFirestore(); // Obtém uma conexão com o Firestore - banco de dados
@@ -19,7 +18,6 @@ exports.sendMessage = onCall(
     //Informa que a função sendMessage deve usar chave API do Gemini
     {secrets:["GEMINI_API_KEY"]},
     
-    //onCall em vez de onRequest simplifica o processo
     async (data, context) => {
 
       //data - o objeto enviado pelo cliente
@@ -40,18 +38,17 @@ exports.sendMessage = onCall(
 
       // 1. Receber Input do usuário
       // Espera-se que a input do usuário venha de um campo chamado 'prompt'
-      // Combina com o id="prompt-input" do HTML, e presume-se que o Javascript do lado do client vai enviar como data.prompt
+      // O Javascript do lado do client vai enviar como data.prompt
       
-      const userInput = data.prompt;
+      const userInput = data.data.prompt;
 
       console.log("Declarou variavel userInput");
       console.log("Printando userInput: ", userInput);
       console.log("Printando typeof userInput: ", (typeof userInput));
 
-
       // 2. Validação básica do Input
       if (!userInput || typeof userInput !== 'string' || userInput.trim() === '') {
-          console.error("Entrada inválida recebida (esperava 'prompt'):", data);
+          console.error("Entrada inválida recebida (esperava 'prompt'):", data.data);
           
           // Levanta o erro HttpsError para facilitar a apuração de erros do lado do usuário (client-side)
           throw new HttpsError('invalid-argument', 'A mensagem (prompt) não pode estar vazia.');
@@ -62,10 +59,10 @@ exports.sendMessage = onCall(
 
       // 3. Inicializar o client do Gemini
       
-      //Instancia o objeto do Gemini, recebendo a chave API
+      //Nova variável para instanciar o modelo de IA generativa Gemini, recebe a chave API como argumento
       const genAI = new GoogleGenerativeAI(apiKey);
       
-      
+      //Aplica-se o método .getGenerativeModel na instância do modelo para definir sua versão e outras configurações
       const model = genAI.getGenerativeModel({
           model: "gemini-1.5-flash-latest", // Or your preferred model
           // Opcional: Adicionar configurações de segurança, caso necessário
@@ -77,7 +74,7 @@ exports.sendMessage = onCall(
           // ],
       });
 
-      // 4. Fazer a Chamada na API Gemini 🚀
+      // 4. Fazer a Chamada na API Gemini
       try {
           console.log("Enviando solicitação para a API Gemini com o prompt:", userInput);
           const result = await model.generateContent(userInput);

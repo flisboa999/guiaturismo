@@ -5,16 +5,14 @@
 // `firebase.functions()` é utilizada para a SDK Firebase versão 8 (compat library).
 // Se estiver usando a Firebase SDK versão 9 ou mais nova (modular), deve-se usar:
 
+// Mantemos nossa configuração de 
 import { app } from "./firebase-setup.js";
-
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
-
 const functions = getFunctions(app, "us-central1"); // Instancia da Firebase Functions - versão 1
 
 // 2. Referência aos elementos HTML
 // ---------------------------------------
 // Para interagir com os elementos definidos em `index.html`.
-
 // `promptInputElement`: <input type="text" id="prompt-input">
 // Onde o usuário escreve o seu prompt.
 const promptInputElement = document.getElementById('prompt-input');
@@ -33,7 +31,7 @@ const chatLog = document.getElementById('chat-log');
 // - Monitorar os cliques no botão "Enviar"
 // - Monitorar quando a tecla "Enter" é apertada no campo de texto.
 
-// Quando o botão `sendButton` é clicado, chama a função `sendMessageToGemini` function.
+// Quando o botão `sendButton` é clicado, chama a função `sendMessageToGemini`.
 sendButton.addEventListener('click', sendMessageToGemini);
 
 // Quando uma tecla é apertada enquanto o elemento `promptInputElement` está focado:
@@ -55,8 +53,6 @@ async function sendMessageToGemini() {
     // ----------------------------------------------------
     // Pegar o texto do `promptInputElement` e aplicar a função `trim()`
     // para remover espaços em branco do início e fim da string
-
-
 
     const userMessage = promptInputElement.value.trim();
 
