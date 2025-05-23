@@ -10,7 +10,7 @@ import { app } from "./firebase-setup.js";
 
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 
-const functions = getFunctions(app); // Instancia da Firebase Functions - versão 1
+const functions = getFunctions(app, "us-central1"); // Instancia da Firebase Functions - versão 1
 
 /*
 const functions = firebase.functions(); // Instancia da Firebase Functions - versão 2 - validar qual funciona
