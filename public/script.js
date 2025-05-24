@@ -2,15 +2,12 @@
 // ---------------------------------------------
 // Para poder executar nossa função em nuvem (cloud function), precisamos importar diversos
 // módulos diretamente da CDN (Content Distribution Network) da Firebase
-// teste teste
 // Imports das Funções em Nuvem (Cloud Functions)
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 
 // Imports de banco de dados Firestore e timestamp
 import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"
-
 import { app } from "./firebase-setup.js"; // Importa o objeto do app Firebase, instanciado no arquivo firebase-setup
-
 const db = getFirestore(app); // Instancia banco de dados Firestore
 
 //Utilizada para todos reads/writes (leituras/gravações) no Banco de Dados
@@ -64,11 +61,15 @@ async function sendMessageToGemini() {
 
     const userMessage = promptInputElement.value.trim();
 
+    console.log("Declarou variavel userMessage");
+    console.log("Printando userMessage: ", userMessage);
+    console.log("Printando typeof userMessage: ", (typeof userMessage));
+
     // Se a mensagem estiver vazia após o trim, não faça mais nada
     if (!userMessage) {
         // Mensagem de erro em pop up para o usuário:
         alert("Erro. Por favor digite uma mensagem");
-        return; // Parar a execução da função antes do término 
+        return; // Parar a execução da função antes do término
     }
 
     // 4b. Atualizar a UI (interface do usuário) - Exibir a mensagem do usuário e desabilitar os inputs (entradas)
@@ -79,7 +80,7 @@ async function sendMessageToGemini() {
     // Limpar o campo de input , uma vez que a mensagem foi enviada (ao chat log).
     promptInputElement.value = '';
 
-    // Desabilitar o o campo de entrada (input) para previnir diversas requisições de envios (flood)
+    // Desabilitar o o campo de entrada (input) para previnir abusos com diversas requisições de envios (flood)
     // enquanto aguarda por uma resposta do Gemini.
     promptInputElement.disabled = true;
     sendButton.disabled = true;
@@ -95,6 +96,7 @@ async function sendMessageToGemini() {
         // (Exemplo: `exports.sendMessage = functions.https.onCall(...)`).
 
         console.log("Payload que estou enviando: ", { prompt: userMessage });
+        console.log("Console.log do userAgent: ", navigator.userAgent); // teste user agent
 
         const callSendMessage = httpsCallable(functions, 'sendMessage');
 
@@ -102,8 +104,18 @@ async function sendMessageToGemini() {
         // O backend da Firebase vai receber esse objeto como o seu parâmetro `data`.
         // Nos estamos enviando a msg do usário `userMessage` na key `prompt`, 
         // então no backend ele será acessível como `data.prompt`.
+        
         console.log("Enviando para a função Firebase:", { prompt: userMessage });
-        const result = await callSendMessage({ prompt: userMessage });
+        
+        const payload = {
+
+            prompt: userMessage,
+            sessionId: "sess-" + Math.random().toString(36).substring(2, 8),
+            userAgent: navigator.userAgent
+
+        }
+        
+        const result = await callSendMessage(payload);
         console.log("Resposta recebida da função Firebase:", result);
 
         // 4d. Processar e Exibir a resposta do Gemini.
@@ -172,7 +184,11 @@ function appendMessage(sender, message) {
 // ----------------------------------------------------------------
 // Substitui "Pensando..." com a mensagem de resposta do Gemini, ou com um erro.
 function updateLastGeminiMessage(newMessage) {
+
     // Pegar todos os elementos com a classe 'message' dentro do `chatLog`.
+
+    console.log("Iniciou a função updateLastGeminiMessage");
+    console.log("Declarou a variável messages");
     const messages = chatLog.getElementsByClassName('message');
 
     // Checa se existe alguma mensagem no log.

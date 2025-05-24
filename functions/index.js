@@ -4,7 +4,7 @@ const {GoogleGenerativeAI} = require("@google/generative-ai"); // Importa a bibl
 const { onCall, HttpsError } = require("firebase-functions/v2/https"); // Importa o Firebase Functions para criar Funções de Nuvem
 const {initializeApp} = require("firebase-admin/app"); // Importa a função initializeApp do Firebase Admin SDK
 const {getFirestore} = require("firebase-admin/firestore"); // Importa a função getFirestore do Firebase Admin SDK
-const {defineSecret} = require("firebase-functions/params"); // Importa a função de chaves secretas do Firebase
+const {defineSecret} = require("firebase-functions/params"); // Importa a função de chaves secretas do Firebase / Secret Manager
 
 initializeApp(); // Inicializa o Firebase Admin SDK
 
@@ -15,8 +15,8 @@ const geminiApiKey = defineSecret("GEMINI_API_KEY");
 
 exports.sendMessage = onCall(
 
-    //Informa que a função sendMessage deve usar chave API do Gemini
-    {secrets:["GEMINI_API_KEY"]},
+    
+    {secrets:["GEMINI_API_KEY"]},//Informa que a função sendMessage deve usar a chave API do Gemini, importa via Secret Manager Google Cloud
     
     async (data, context) => {
 
