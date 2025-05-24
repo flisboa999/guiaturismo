@@ -18,17 +18,16 @@ const functions = getFunctions(app, "us-central1"); // Instancia da Firebase Fun
 // 2. Referência aos elementos HTML
 // ---------------------------------------
 // Para interagir com os elementos definidos em `index.html`.
+
+
+
 // `promptInputElement`: <input type="text" id="prompt-input">
-// Onde o usuário escreve o seu prompt.
-const promptInputElement = document.getElementById('prompt-input');
-
 // `sendButton`: <button id="send-button">
-// Onde o usuário clica para enviar a mensagem.
-const sendButton = document.getElementById('send-button');
-
 // `chatLog`: <div id="chat-log">
-// Onde todas as mensagems do usuário e do Gemini são exibidas.
-const chatLog = document.getElementById('chat-log');
+
+const promptInputElement = document.getElementById('prompt-input'); // Onde o usuário escreve o seu prompt.
+const sendButton = document.getElementById('send-button'); // Onde o usuário clica para enviar a mensagem.
+const chatLog = document.getElementById('chat-log'); // Onde todas as mensagems do usuário e do Gemini são exibidas.
 
 // 3. Monitorar eventos (event listeners)
 // ---------------------------
@@ -36,18 +35,54 @@ const chatLog = document.getElementById('chat-log');
 // - Monitorar os cliques no botão "Enviar"
 // - Monitorar quando a tecla "Enter" é apertada no campo de texto.
 
-// Quando o botão `sendButton` é clicado, chama a função `sendMessageToGemini`.
-sendButton.addEventListener('click', sendMessageToGemini);
 
-// Quando uma tecla é apertada enquanto o elemento `promptInputElement` está focado:
+// Função que vai decidir o que fazer quando o usuário enviar uma mensagem
+function handleSendMessage() {
+    
+    // Pega o texto que o usuário digitou no campo de input
+    const userMessage = promptInputElement.value.trim();  
+    // `.trim()` remove espaços no começo e no fim da mensagem
+
+    // Se a mensagem estiver vazia...
+    if (!userMessage) {  
+        // Mostra um alerta avisando que precisa digitar algo
+        alert("Erro. Por favor digite uma mensagem");
+        // Para a função aqui mesmo
+        return;  
+    }
+
+    // Pega qual opção o usuário escolheu: "chat" ou "gemini"
+    const messageType = messageTypeSelector.value;  
+
+    // Se o usuário escolheu "gemini"
+    if (messageType === 'gemini') {
+        // Chama a função que envia a mensagem para o Gemini (IA)
+        sendMessageToGemini(userMessage);
+    } else {
+        // Se não for "gemini", envia a mensagem como chat público
+        sendMessageChat(userMessage);
+    }
+}
+
+
+// Quando o botão de enviar for clicado
+sendButton.addEventListener('click', handleSendMessage);
+// Passamos a função como referência, sem os parênteses ().
+// Assim, ela só será executada quando o usuário clicar.
+
+
+// Quando qualquer tecla for pressionada dentro do campo de input
 promptInputElement.addEventListener('keypress', function(event) {
     
-    // Checar se a tecla apertada foi "Enter".
+    // Se a tecla pressionada for "Enter"...
     if (event.key === 'Enter') {
-        // A função `sendMessageToGemini` também pode ser ativada apertando Enter.
-        sendMessageToGemini();
+        // Chama a função para enviar a mensagem
+        handleSendMessage();
+        // Aqui usamos () porque queremos que a função execute AGORA.
     }
 });
+
+
 
 // 4. Definir a funcionalidade central para enviar a mensagem e lidar com a resposta
 // -------------------------------------------------------------------
@@ -114,7 +149,7 @@ async function sendMessageToGemini() {
             userAgent: navigator.userAgent
 
         }
-        
+
         const result = await callSendMessage(payload);
         console.log("Resposta recebida da função Firebase:", result);
 
