@@ -247,12 +247,14 @@ async function sendMessageToGemini(userMessage) {
 // Função sendMessageChat → grava mensagem diretamente na coleção "chats" do Firestore, sem passar pela API Gemini
 // Usada para enviar mensagens públicas no chat global, armazenando os dados direto do frontend
 // Armazena: prompt, response (null), ID de sessão aleatório e userAgent do cliente
+
 async function sendMessageChat(prompt) {
     await addDoc(chatsCollection, {
-        prompt: prompt,
-        response: null,
-        sessionId: "sess-" + Math.random().toString(36).substring(2, 8),
-        userAgent: navigator.userAgent,
+        prompt: prompt,  // Mensagem enviada pelo usuário
+        response: null,  // Nenhuma resposta, pois não passou pelo Gemini
+        sessionId: "sess-" + Math.random().toString(36).substring(2, 8),  // ID de sessão aleatório
+        userAgent: navigator.userAgent,  // Info do cliente
+        timestamp: serverTimestamp()  // Timestamp confiável do servidor
     });
 }
 // Final de script.js
