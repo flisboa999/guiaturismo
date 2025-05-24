@@ -38,23 +38,55 @@ const messageType = messageTypeSelector.value; // Escolhe se vai mandar pelo Gem
 
 
 
+// Cria um listener em tempo real na coleção "chats"
 onSnapshot(chatsCollection, (snapshot) => {
-    // snapshot: contém todas as mudanças (mensagens, atualizações, deletes, etc)
-
+    
+    // Para cada alteração que aconteceu no snapshot (adicionar, modificar ou deletar)
     snapshot.docChanges().forEach((change) => {
-
-        if (change.type === "added"){
-            // Estamos interessados nas novas mensagens (que são do tipo "added")
-            // Então, se uma mensagem for adicionada, executa o código abaixo
-
+        
+        // Se a alteração for do tipo "added" (ou seja, uma nova mensagem foi inserida)
+        if (change.type === "added") {
+            
+            // Chama a função renderMessage para exibir essa nova mensagem na interface.
+            // Passa o ID do documento e os dados da mensagem.
             renderMessage(change.doc.id, change.doc.data());
-            // Invoca a função para mostrar a mensagem no chatlog
-            // Fornece os argumentos:
-            // 1. change.doc.id - o ID do documento na Firestore
-            // 2. change.doc.data() - os dados da mensagem (prompt, response, etc.)
         }
     });
 });
+
+
+// Função que recebe: 
+// 1. docId → ID do documento no Firestore.
+// 2. data → dados da mensagem (prompt, response, etc.).
+function renderMessage(docId, data) {
+
+    // Cria um novo elemento HTML <div> para exibir a mensagem.
+    const messageElement = document.createElement('div');
+
+    // Adiciona a classe CSS 'message' para estilizar esse div.
+    messageElement.classList.add('message');
+
+    // Cria a variável content que vai conter o texto formatado da mensagem.
+    // Sempre começa mostrando o prompt enviado pelo usuário.
+    let content = `<strong>Usuário:</strong> ${data.prompt}`;
+
+    // Se a mensagem tem uma resposta (ou seja, não é null ou undefined):
+    if (data.response) {
+        
+        // Adiciona uma nova linha com a resposta do Gemini.
+        content += `<br><strong>Gemini:</strong> ${data.response}`;
+    }
+
+    // Define o conteúdo HTML da div como o texto formatado.
+    messageElement.innerHTML = content;
+
+    // Adiciona (append) a nova div com a mensagem ao final do chatLog.
+    chatLog.appendChild(messageElement);
+
+    // Faz o scroll automático do chat para mostrar a última mensagem.
+    chatLog.scrollTop = chatLog.scrollHeight;
+}
+
 
 
 // 3. Monitorar eventos (event listeners)
