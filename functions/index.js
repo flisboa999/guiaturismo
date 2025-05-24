@@ -103,12 +103,12 @@ exports.sendMessage = onCall(
 
           // AQUI → Cria o chatDoc
             const chatDoc = {
-                prompt: userInput,  
-                response: geminiOutput,  
-                timestamp: FieldValue.serverTimestamp(),  
-                sessionId: sessionId,  
-                userAgent: userAgent,   
-                userId: context.auth ? context.auth.uid : null  
+                prompt: userInput, // A mensagem que o usuário enviou, sempre obrigatória.
+                response: geminiOutput || null, // A resposta do Gemini; se não existir (chat global), salva null.
+                timestamp: FieldValue.serverTimestamp(), // Marca a data/hora oficial no servidor.
+                sessionId: sessionId || null, // ID da sessão; se não existir, salva null.
+                userAgent: userAgent || null, // Info do navegador; se não enviada, salva null.
+                userId: context.auth ? context.auth.uid : null // Se o usuário estiver logado, salva o ID; senão, salva null.
             };
 
             // versao antiga
