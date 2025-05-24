@@ -14,6 +14,8 @@ const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { initializeApp } = require("firebase-admin/app");
 const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 
+
+
 // Importa utilitário para acessar chaves secretas no Google Secret Manager
 const { defineSecret } = require("firebase-functions/params");
 
@@ -79,19 +81,20 @@ exports.sendMessage = onCall(
     const genAI = new GoogleGenerativeAI(apiKey);
 
     // Configura o modelo do Gemini
-    console.log("[INIT] Configurando modelo Gemini");
+    console.log("[INIT] Configurando e inicializando o LLM Gemini");
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash-latest", // Define a versão do modelo
     });
 
     try {
-      // Faz chamada para a API Gemini com o prompt do usuário
+
+      // Instância do Modelo LLM Gemini aplica método que recebe como argumento o input de prompt do usuário
       console.log("[CALL] Enviando solicitação para API Gemini com prompt: ", userInput);
       const result = await model.generateContent(userInput);  // Gera a resposta com base no prompt
 
       console.log("[INIT] result:", result, "| typeof:", typeof result);
 
-      const response = await result.response;  // Extrai a resposta gerada
+      const response = await result.response;  // Extrai a resposta gerada de forma assíncrona (entra na fila e aguarda)
 
       console.log("[INIT] response:", response, "| typeof:", typeof response);
 

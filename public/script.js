@@ -22,6 +22,16 @@ function timestamp() {
   return `[${new Date().toLocaleString()}]`;
 }
 
+// Função sanitize → sanitiza qualquer input para evitar injeção de código malicioso (XSS)
+// Cria um elemento <div> temporário no DOM (não é adicionado visualmente)
+// Define o input como textContent → converte qualquer código em texto puro, neutralizando tags e scripts
+// Retorna div.innerHTML → conteúdo seguro, que pode ser inserido na interface sem risco de execução indesejada
+function sanitize(input) {
+    const div = document.createElement('div'); // Elemento temporário para isolar o input
+    div.textContent = input;                  // Transforma o input em texto literal, escapando tags e scripts
+    return div.innerHTML;                     // Retorna o conteúdo seguro, pronto para renderizar
+}
+
 // Referência para interagir e aplicar métodos nos elementos HTML.
 // Os ids possuem o mesmo nome das variáveis
 // - promptInput: <input type="text" id="prompt-input">
@@ -31,6 +41,18 @@ function timestamp() {
 const promptInput = document.getElementById('prompt-input'); // Onde o usuário escreve o seu prompt.
 const sendButton = document.getElementById('send-button'); // Onde o usuário clica para enviar a mensagem.
 const chatLog = document.getElementById('chat-log'); // Onde todas as mensagems do usuário e do Gemini são exibidas.
+const loadingIndicator = document.getElementById('loading');  // Onde indica se está processando a mensagem
+
+// Exibe o indicador de loading → sinaliza ao usuário que uma operação está em andamento
+function showLoading() {
+    loadingIndicator.style.display = 'block';
+}
+
+// Oculta o indicador de loading → sinaliza que a operação foi concluída
+function hideLoading() {
+    loadingIndicator.style.display = 'none';
+}
+
 
 // Referência à coleção "chats" no Firestore, onde as mensagens serão criadas, lidas e monitoradas em tempo real
 const chatsCollection = collection(db, "chats");
@@ -82,17 +104,29 @@ function renderMessage(docId, data) {
     console.log("[UPDATE] Classe 'message' adicionada ao messageElement");
 
     // Cria a variável content que vai conter o texto formatado da mensagem.
-    let content = `<strong>Usuário:</strong> ${data.prompt}`;
+
+    let content = `<strong>Usuário:</strong> ${sanitize(data.prompt)}`;
+
 
     console.log("[INIT] content criado com prompt:", content, "| typeof:", typeof content);
 
     // Se a mensagem tem uma resposta (ou seja, não é null ou undefined):
+
+
+
+
+
+
+
+
+
     if (data.response) {
 
         console.log("[CHECK] data.response existe:", data.response, "| typeof:", typeof data.response);
 
         // Adiciona uma nova linha com a resposta do Gemini.
-        content += `<br><strong>Gemini:</strong> ${data.response}`;
+    
+        content += `<br><strong>Gemini:</strong> ${sanitize(data.response)}`;
 
         console.log("[UPDATE] content atualizado com response:", content);
 
@@ -255,17 +289,26 @@ async function sendMessageToGemini(userMessage) {
     }
 }
 
-// Função sendMessageChat → grava mensagem diretamente na coleção "chats" do Firestore, sem passar pela API Gemini
-// Usada para enviar mensagens públicas no chat global, armazenando os dados direto do frontend
-// Armazena: prompt, response (null), ID de sessão aleatório e userAgent do cliente
-
+// Função sendMessageChat → grava uma nova mensagem diretamente na coleção "chats" do Firestore
+// Usada para armazenar mensagens públicas enviadas pelo usuário, sem processamento da API Gemini
 async function sendMessageChat(prompt) {
-    await addDoc(chatsCollection, {
-        prompt: prompt,  // Mensagem enviada pelo usuário
-        response: null,  // Nenhuma resposta, pois não passou pelo Gemini
-        sessionId: "sess-" + crypto.randomUUID(),  // ID de sessão aleatório
-        userAgent: navigator.userAgent,  // Info do cliente
-        timestamp: serverTimestamp()  // Timestamp confiável do servidor
-    });
+    try {
+        await addDoc(chatsCollection, {  
+            prompt: prompt,                // Armazena o texto enviado pelo usuário
+            response: null,                // Define como null → pois não há resposta automática (não passou pelo Gemini)
+            sessionId: crypto.randomUUID(), // Gera um ID de sessão seguro e único via Web Crypto API
+            userAgent: navigator.userAgent, // Registra informações sobre o dispositivo/navegador do usuário
+            timestamp: serverTimestamp()    // Timestamp gerado pelo servidor → evita inconsistência com o relógio do cliente
+        });
+
+        console.log("[SUCCESS] Mensagem enviada com sucesso para Firestore."); 
+        // Log de sucesso → facilita monitoramento e debugging
+
+    } catch (error) {
+        console.error("[ERROR] Falha ao enviar mensagem no chat:", error); 
+        // Log de erro técnico para desenvolvedor
+
+        alert("Erro ao enviar a mensagem. Por favor, tente novamente.");  
+        // Feedback visual para o usuário → melhora a experiência em caso de falha
+    }
 }
-// Final de script.js
