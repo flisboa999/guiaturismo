@@ -5,11 +5,11 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebas
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 
-// Importar Serviços da Firebase 
+// Importar Funções e Firestore (DB) da Firebase; Ambiente de Produção (Deploy na web) e teste (Emulador local)
 import { getFirestore, connectFirestoreEmulator } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getFunctions, connectFunctionsEmulator } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 
-// ✅ (Optional) Import Auth if you plan to use it later
+// Opcional - auth para implementar autenticação depois
 // import { getAuth, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // Configuração do aplicativo Firebase - informações únicas
@@ -26,7 +26,7 @@ const firebaseConfig = {
 
 // Inicializar App Firebase
 const app = initializeApp(firebaseConfig);
-console.log("✅ Firebase App initialized");
+console.log("Aplicativo Firebase Inicializado (App instanciado)");
 
 // Inicializar Firestore (database)
 const db = getFirestore(app);
@@ -43,13 +43,13 @@ if (location.hostname === "localhost") {
 
     // Emulador Firestore
     connectFirestoreEmulator(db, "localhost", 8080);
-    console.log("✅ Connected to Firestore Emulator at localhost:8080");
+    console.log("Conectado ao Emulador da Firestore em localhost:8080");
 
     // Emulador functions
     connectFunctionsEmulator(functions, "localhost", 5001);
-    console.log("✅ Connected to Functions Emulator at localhost:5001");
+    console.log("Conectado ao Emulador Functions Emulator at localhost:5001");
 
-    // 🔥 Optional: Auth Emulator
+    // Opcional: Emulator de autenticação
     // connectAuthEmulator(auth, "http://localhost:9099");
     // console.log("✅ Connected to Auth Emulator at localhost:9099");
 
