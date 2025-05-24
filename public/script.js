@@ -13,7 +13,9 @@ import { app, db, functions } from './firebase-setup.js';
 // serverTimestamp → gera timestamp confiável do servidor, evitando dependência do relógio do cliente
 // onSnapshot → listener reativo que detecta e responde a mudanças (create, update, delete) em tempo real
 // query, orderBy → cria consultas complexas e ordena resultados de forma eficiente
-import { collection, addDoc, serverTimestamp, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import { collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 
 // Função de timestamp: Simples, facilita o debug e armazenamento de logs
 function timestamp() {
@@ -32,6 +34,15 @@ const chatLog = document.getElementById('chat-log'); // Onde todas as mensagems 
 
 // Referência à coleção "chats" no Firestore, onde as mensagens serão criadas, lidas e monitoradas em tempo real
 const chatsCollection = collection(db, "chats");
+
+
+// Cria uma query: pega os documentos da coleção 'chats', ordenados por 'timestamp' de forma crescente
+// e limita para as últimas 50 mensagens; É ajustável conforme necessidade
+const chatsQuery = query(
+    chatsCollection,            // Referência da coleção
+    orderBy('timestamp', 'asc'),  // Ordena pela data (mais antigas primeiro) 
+    limit(50)                   // Limita a 50 mensagens
+);
 
 // onSnapshot → Cria listener reativo em "chats" para sincronizar a Interface (UI) em tempo real as coleções do banco de dados Firebase
 // Snapshot → Cópia fiel e instantânea dos dados no momento da mudança (create, update, delete), aciona automático no acionamento da consulta ou do listener
@@ -208,7 +219,7 @@ async function sendMessageToGemini(userMessage) {
         // Monta o objeto 'payload' contendo os dados necessários para serem enviados ao backend
         const payload = {
             prompt: userMessage,  // Mensagem que será enviada à API do Gemini
-            sessionId: "sess-" + Math.random().toString(36).substring(2, 8),  // Gera um ID de sessão aleatório para rastreamento
+            sessionId: "sess-" + crypto.randomUUID(),  // Gera um ID de sessão aleatório para rastreamento
             userAgent: navigator.userAgent  // Captura informações do navegador do usuário (para logging ou análise)
         };
 
@@ -252,7 +263,7 @@ async function sendMessageChat(prompt) {
     await addDoc(chatsCollection, {
         prompt: prompt,  // Mensagem enviada pelo usuário
         response: null,  // Nenhuma resposta, pois não passou pelo Gemini
-        sessionId: "sess-" + Math.random().toString(36).substring(2, 8),  // ID de sessão aleatório
+        sessionId: "sess-" + crypto.randomUUID(),  // ID de sessão aleatório
         userAgent: navigator.userAgent,  // Info do cliente
         timestamp: serverTimestamp()  // Timestamp confiável do servidor
     });
