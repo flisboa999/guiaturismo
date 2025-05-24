@@ -11,7 +11,8 @@ import { app } from "./firebase-setup.js"; // Importa o objeto do app Firebase, 
 const db = getFirestore(app); // Instancia banco de dados Firestore
 
 //Utilizada para todos reads/writes (leituras/gravações) no Banco de Dados
-const chatsCollection = collection(db,"chats"); // referência à coleção "chats" - Se existir aponta (pointer), se não existir Firebase cria automaticamente
+
+const chatsCollection = collection(db, "chats"); // referência à coleção "chats" - Se existir aponta (pointer), se não existir Firebase cria automaticamente
 
 const functions = getFunctions(app, "us-central1"); // Instancia da Firebase Functions, recebe o objeto app de firebase-setup.js como argumento
 
@@ -25,10 +26,11 @@ const functions = getFunctions(app, "us-central1"); // Instancia da Firebase Fun
 // `sendButton`: <button id="send-button">
 // `chatLog`: <div id="chat-log">
 
-const InputElementprompt = document.getElementById('prompt-input'); // Onde o usuário escreve o seu prompt.
+const promptInputElement = document.getElementById('prompt-input'); // Onde o usuário escreve o seu prompt.
 const sendButton = document.getElementById('send-button'); // Onde o usuário clica para enviar a mensagem.
 const chatLog = document.getElementById('chat-log'); // Onde todas as mensagems do usuário e do Gemini são exibidas.
 const messageType = messageTypeSelector.value; // Escolhe se vai mandar pelo Gemini ou mensagem normal no Chat público
+
 
 
 //0. OnSnapshot - Função que sincroniza em tempo real com as coleções do banco de dados da Firestore
@@ -77,9 +79,7 @@ function handleSendMessage() {
         return;  
     }
 
-    // Pega qual opção o usuário escolheu: "chat" ou "gemini"
-    const messageType = messageTypeSelector.value;  
-
+    // Pega qual opção o usuário escolheu: "chat" ou "gemini" 
     // Se o usuário escolheu "gemini"
     if (messageType === 'gemini') {
         // Chama a função que envia a mensagem para o Gemini (IA)
