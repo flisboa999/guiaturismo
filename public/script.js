@@ -30,10 +30,6 @@ const promptInput = document.getElementById('prompt-input'); // Onde o usuário 
 const sendButton = document.getElementById('send-button'); // Onde o usuário clica para enviar a mensagem.
 const chatLog = document.getElementById('chat-log'); // Onde todas as mensagems do usuário e do Gemini são exibidas.
 
-// Escolhe se vai mandar pelo Gemini ou mensagem normal no Chat público - Valores: "gemini" ou "chat"
-// - `chatLog`: <option value="chat" ou "gemini">
-const messageType = messageTypeSelector.value; 
-
 // Referência à coleção "chats" no Firestore, onde as mensagens serão criadas, lidas e monitoradas em tempo real
 const chatsCollection = collection(db, "chats");
 
@@ -150,21 +146,24 @@ function handleSendMessage() {
 
     console.log("[CHECK] userMessage válida:", userMessage);
 
-    // Pega qual opção o usuário escolheu: "chat" ou "gemini"
+
+    // Referência à tag HTML <select>):
+    // <select id="message-type">; value="chat" ou "gemini"
+    const messageType = document.getElementById(message-type).value;
 
     console.log("[CHECK] messageType selecionado:", messageType);
 
     // Se o usuário escolheu "gemini"
     if (messageType === 'gemini') {
 
-        console.log("[CALL] Chamando sendMessageToGemini com:", userMessage);
+        console.log("[CALL] Chamando sendMessageToGemini com argumento:", userMessage);
 
         // Chama a função que envia a mensagem para o Gemini (IA)
         sendMessageToGemini(userMessage);
 
     } else {
 
-        console.log("[CALL] Chamando sendMessageChat com:", userMessage);
+        console.log("[CALL] Chamando sendMessageChat com argumento:", userMessage);
 
         // Se não for "gemini", envia a mensagem como chat público
         sendMessageChat(userMessage);
