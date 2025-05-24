@@ -171,7 +171,7 @@ function handleSendMessage() {
 }
 
 // Função assíncrona para enviar mensagem à Cloud Function do Firebase, aguardando resposta do Gemini
-async function sendMessageToGemini() {
+async function sendMessageToGemini(userMessage) {
 
     console.log("[CALL] Função sendMessageToGemini chamada");  //Marca o início da função
 
