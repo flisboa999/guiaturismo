@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 
 
-
 const {GoogleGenerativeAI} = require("@google/generative-ai"); // Importa a biblioteca do Google Generative AI para usar o Gemini
 const { onCall, HttpsError } = require("firebase-functions/v2/https"); // Importa o Firebase Functions para criar Funções de Nuvem
 const {initializeApp} = require("firebase-admin/app"); // Importa a função initializeApp do Firebase Admin SDK

@@ -3,18 +3,24 @@
 // Para poder executar nossa função em nuvem (cloud function), precisamos importar diversos
 // módulos diretamente da CDN (Content Distribution Network) da Firebase
 // Imports das Funções em Nuvem (Cloud Functions)
-import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
-
+import { httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 // Imports de banco de dados Firestore e timestamp
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"
-import { app } from "./firebase-setup.js"; // Importa o objeto do app Firebase, instanciado no arquivo firebase-setup
-const db = getFirestore(app); // Instancia banco de dados Firestore
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"
+import { app, db, functions } from './firebase-setup.js';// Importa oS objetos do app, db,functions Firebase, instanciados no arquivo firebase-setup
 
+
+const db = getFirestore(app); // Instancia banco de dados Firestore
 //Utilizada para todos reads/writes (leituras/gravações) no Banco de Dados
 
-const chatsCollection = collection(db, "chats"); // referência à coleção "chats" - Se existir aponta (pointer), se não existir Firebase cria automaticamente
+// Conectar ao emulador da Firestore
+const isLocal = location.hostname === "localhost"; 
 
-const functions = getFunctions(app, "us-central1"); // Instancia da Firebase Functions, recebe o objeto app de firebase-setup.js como argumento
+if (isLocal) {
+    connectFirestoreEmulator(db, "localhost", 8080);
+    connectFunctionsEmulator(functions, "localhost", 5001);
+    console.log("Conectador");
+}
+
 
 // 2. Referência aos elementos HTML
 // ---------------------------------------
@@ -30,7 +36,7 @@ const promptInputElement = document.getElementById('prompt-input'); // Onde o us
 const sendButton = document.getElementById('send-button'); // Onde o usuário clica para enviar a mensagem.
 const chatLog = document.getElementById('chat-log'); // Onde todas as mensagems do usuário e do Gemini são exibidas.
 const messageType = messageTypeSelector.value; // Escolhe se vai mandar pelo Gemini ou mensagem normal no Chat público
-
+const chatsCollection = collection(db, "chats"); //
 
 
 //0. OnSnapshot - Função que sincroniza em tempo real com as coleções do banco de dados da Firestore
@@ -226,9 +232,6 @@ async function sendMessageToGemini() {
         // erro levantado pela Cloud Function, Erro da API do Gemini ), vai ser detectado aqui.
         console.error("Erro ao chamar a função Firebase sendMessage:", error);
 
-        // Exibe uma mensagem de erro no chat log.
-        // `error.message` geralmente contém uma mensagem amigável ao usuário originada de HttpsError.
-        updateLastGeminiMessage('Erro: ' + error.message);
 
     } finally {
         // 4f. Reativar os inputs
@@ -247,63 +250,6 @@ async function sendMessageToGemini() {
 // ----------------------------------------------------------
 // Essa função recebe dois argumentos: quem enviou (ex., "Você", "Gemini") e a mensagem (string)
 // Cria um novo `div`, aplica estilo e adiciona ao chatlog `chatLog`.
-function appendMessage(sender, message) {
-    
-    // Cria um novo elemento div para armazenar a mensagem
-    const messageElement = document.createElement('div');
-
-    // Adiciona uma classe CSS para personalizar aparência (definida em `style.css`).
-    messageElement.classList.add('message');
-
-    // Ajustar o conteúdo do elemento da mensagem.
-    // Usa-se `innerHTML` para permitir HTML simples como `<strong>`.
-    // `<strong>${sender}:</strong>` faz o nome de quem enviou (sender) ficar em negrito.
-    // `message.replace(/\n/g, '<br>')` Converte caracteres de nova linha (\n) do Gemini
-    // em quebras de linha HTML (<br>) para serem renderizados corretamente.
-    // IMPORTANTE: Cuidado com `innerHTML` se o conteúdo de 'message' pode vir de
-    // fontes não confiáveis diretamente sem sanitizar as entradas, porque pode ser um vetor para XSS
-    // Nesse caso, `sender` é controlado por nós e a `message` do Gemini é geralmente
-    // texto, porém se puder conter HTML é provável a necessidade futura de implementar mais sanitização
-    messageElement.innerHTML = `<strong>${sender}:</strong> ${message.replace(/\n/g, '<br>')}`;
-
-    // Adiciona a nova mensagem criada para o container `chatLog`
-    chatLog.appendChild(messageElement);
-
-    // Automaticamente rola o `chatLog` para o fundo, para que a última mensagem fique visivel
-    chatLog.scrollTop = chatLog.scrollHeight;
-}
-
-// 6. Função para atualizar o texto de "Pensando" para a mensagem de resposta
-// ----------------------------------------------------------------
-// Substitui "Pensando..." com a mensagem de resposta do Gemini, ou com um erro.
-function updateLastGeminiMessage(newMessage) {
-
-    // Pegar todos os elementos com a classe 'message' dentro do `chatLog`.
-
-    console.log("Iniciou a função updateLastGeminiMessage");
-    console.log("Declarou a variável messages");
-    const messages = chatLog.getElementsByClassName('message');
-
-    // Checa se existe alguma mensagem no log.
-    if (messages.length > 0) {
-        // Pega o elemento da última mensagem.
-        const lastMessageElement = messages[messages.length - 1];
-
-        // Checagem simples para ver se a últime mensagem é a "Pensando...".
-        // Pressupõe que a msg "Pensando..." sempre começa com "<strong>Gemini:</strong>".
-        if (lastMessageElement.innerHTML.includes("<strong>Gemini:</strong>")) {
-            // Se positivo, atualiza o seu conteúdo com a nova mensagem do Gemini.
-            lastMessageElement.innerHTML = `<strong>Gemini:</strong> ${newMessage.replace(/\n/g, '<br>')}`;
-        } else {
-            // Plano B: Se a última mensagem não veio no formato esperado (Ex. usuário escrever rápido
-            // demais, ou outro caso extremo), então a nova mensagem é adicionada (Append)
-            // como uma mensagem nova do Gemini
-            appendMessage('Gemini', newMessage);
-        }
-    }
-    // Fazer o scroll do chatlog até o final depois de atualizar a mensagem
-    chatLog.scrollTop = chatLog.scrollHeight;
-}
 
 
 // 7. Função para gravar diretamente na Firestore
