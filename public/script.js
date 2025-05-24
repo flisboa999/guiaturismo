@@ -25,9 +25,35 @@ const functions = getFunctions(app, "us-central1"); // Instancia da Firebase Fun
 // `sendButton`: <button id="send-button">
 // `chatLog`: <div id="chat-log">
 
-const promptInputElement = document.getElementById('prompt-input'); // Onde o usuário escreve o seu prompt.
+const InputElementprompt = document.getElementById('prompt-input'); // Onde o usuário escreve o seu prompt.
 const sendButton = document.getElementById('send-button'); // Onde o usuário clica para enviar a mensagem.
 const chatLog = document.getElementById('chat-log'); // Onde todas as mensagems do usuário e do Gemini são exibidas.
+const messageType = messageTypeSelector.value; // Escolhe se vai mandar pelo Gemini ou mensagem normal no Chat público
+
+
+//0. OnSnapshot - Função que sincroniza em tempo real com as coleções do banco de dados da Firestore
+// Sempre que for adicionado um novo documento (mensagem) -> função é chamada automaticamente
+
+
+
+onSnapshot(chatsCollection, (snapshot) => {
+    // snapshot: contém todas as mudanças (mensagens, atualizações, deletes, etc)
+
+    snapshot.docChanges().forEach((change) => {
+
+        if (change.type === "added"){
+            // Estamos interessados nas novas mensagens (que são do tipo "added")
+            // Então, se uma mensagem for adicionada, executa o código abaixo
+
+            renderMessage(change.doc.id, change.doc.data());
+            // Invoca a função para mostrar a mensagem no chatlog
+            // Fornece os argumentos:
+            // 1. change.doc.id - o ID do documento na Firestore
+            // 2. change.doc.data() - os dados da mensagem (prompt, response, etc.)
+        }
+    });
+});
+
 
 // 3. Monitorar eventos (event listeners)
 // ---------------------------
@@ -259,36 +285,11 @@ async function sendMessageChat (prompt) {
     await addDoc (chatsCollection, {
         prompt: prompt,
         response:null,
-        timestamp: serverTimestamp(),
         sessionId: "sess-" + Math.random().toString(36).substring(2,8),
         userAgent: navigator.userAgent,
-        likes: 0,
-        dislikes: 0
     });
 }
 
-
-//8. Função que sincroniza em tempo real com as colleções do banco de dados da Firestore
-// Sempre que for adicionado um novo documento (mensagem) -> função é chamada automaticamente
-
-onSnapshot(chatsCollection, (snapshot) => {
-    // snapshot: contém todas as mudanças (mensagens, atualizações, deletes, etc)
-
-    snapshot.docChanges().forEach((change) => {
-
-        if (change.type === "added"){
-            // Estamos interessados nas novas mensagens (que são do tipo "added")
-            // Então, se uma mensagem for adicionada, executa o código abaixo
-
-            renderMessage(change.doc.id, change.doc.data());
-            // Invoca a função para mostrar a mensagem no chatlog
-            // Fornece os argumentos:
-            // 1. change.doc.id - o ID do documento na Firestore
-            // 2. change.doc.data() - os dados da mensagem (prompt, response, etc.)
-        }
-    });
-});
-        
 
 
 

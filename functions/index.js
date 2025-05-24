@@ -1,9 +1,11 @@
 /* eslint-disable max-len */
 
+
+
 const {GoogleGenerativeAI} = require("@google/generative-ai"); // Importa a biblioteca do Google Generative AI para usar o Gemini
 const { onCall, HttpsError } = require("firebase-functions/v2/https"); // Importa o Firebase Functions para criar Funções de Nuvem
 const {initializeApp} = require("firebase-admin/app"); // Importa a função initializeApp do Firebase Admin SDK
-const {getFirestore} = require("firebase-admin/firestore"); // Importa a função getFirestore do Firebase Admin SDK
+const {getFirestore, FieldValue} = require("firebase-admin/firestore"); // Importa a função getFirestore do Firebase Admin SDK
 const {defineSecret} = require("firebase-functions/params"); // Importa a função de chaves secretas do Firebase / Secret Manager
 
 initializeApp(); // Inicializa o Firebase Admin SDK
@@ -41,6 +43,8 @@ exports.sendMessage = onCall(
       // O Javascript do lado do client vai enviar como data.prompt
       
       const userInput = data.data.prompt;
+      const sessionId = data.data.sessionId; 
+      const userAgent = data.data.userAgent;
 
       console.log("Declarou variavel userInput");
       console.log("Printando userInput: ", userInput);
@@ -87,15 +91,53 @@ exports.sendMessage = onCall(
           }
 
           const geminiOutput = response.text();
+
+          console.log("Declarou variavel geminiOutput");
+          console.log("Printando geminiOutput: ", geminiOutput);
+          console.log("Printando typeof geminiOutput: ", (typeof geminiOutput));
+
+          // chatDoc
+          // objeto com todos os dados da mensagem.
+          // Facilita salvar tudo junto no Firestore.
+          // Mantém estrutura organizada e padrão.
+
+          // AQUI → Cria o chatDoc
+            const chatDoc = {
+                prompt: userInput,  
+                response: geminiOutput,  
+                timestamp: FieldValue.serverTimestamp(),  
+                sessionId: sessionId,  
+                userAgent: userAgent,   
+                userId: context.auth ? context.auth.uid : null  
+            };
+
+            // versao antiga
+            // AQUI → Grava no Firestore
+            // await db.collection('chats').add(chatDoc);
+
+            try {
+                const docRef = await db.collection('chats').add(chatDoc); // Store ref if you want ID
+                console.log("docRef do chat salvo com sucesso, ID ", docRef.id, " , Dados (chatDoc) :", chatDoc);
+            } catch (dbError) {
+                console.error("Erro ao salvar dados na Firestore ", dbError, " , tentou salvar Dados (chatDoc) : ", chatDoc);
+                throw new HttpsError('internal', 'Falha ao salvar a mensagem'); // Re-throw or handle
+            };
+            //1
+
+
+          //validação de erro 
           if (typeof geminiOutput !== 'string') {
-                console.error("Texto da resposta da API Gemini não é uma string:", geminiOutput);
+                console.error("Texto da resposta da API Gemini não é uma string: ", geminiOutput);
                 throw new HttpsError('internal', 'Formato de resposta inesperado da API Gemini.');
           }
 
           console.log("Resposta da API Gemini recebida:", geminiOutput);
 
           // 5. Retornar a resposta ao cliente
+
           return { reply: geminiOutput };
+
+
 
       } catch (error) {
           console.error("Erro ao chamar a API Gemini:", error);
@@ -109,7 +151,7 @@ exports.sendMessage = onCall(
 
           // Dá uma mensagem de erro que seja legível ao usuário
           // Se já for um erro do tipo HttpsError, relança ; senão, cria (encapsula) um novo HttpsError com base no erro original
-          if (error instanceof functions.https.HttpsError) {
+          if (error instanceof HttpsError) {
               throw error; // Relança o erro original, já está no formato esperado
           }
           throw new HttpsError(
