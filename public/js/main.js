@@ -21,16 +21,10 @@ import { chatsCollection, initSnapshot } from './state.js';
 import { renderMessage } from './ui.js';
 
 
-initSnapshot(chatsCollection, renderMessage, chatLog);
-
-console.log("[CALL] initSnapShot");
-
-
 // Função de timestamp: Simples, facilita o debug e armazenamento de logs
 function timestamp() {
   return `[${new Date().toLocaleString()}]`;
 }
-
 
 // Referência para interagir e aplicar métodos nos elementos HTML.
 // Os ids possuem o mesmo nome das variáveis
@@ -42,6 +36,8 @@ const promptInput = document.getElementById('prompt-input'); // Onde o usuário 
 const sendButton = document.getElementById('send-button'); // Onde o usuário clica para enviar a mensagem.
 const chatLog = document.getElementById('chat-log'); // Onde todas as mensagems do usuário e do Gemini são exibidas.
 
+initSnapshot(chatsCollection, renderMessage, chatLog);
+console.log("[CALL] initSnapShot");
 
 // Event listeners → permite chat interativo e responsivo:
 // - Click no botão "Enviar" → dispara envio da mensagem
