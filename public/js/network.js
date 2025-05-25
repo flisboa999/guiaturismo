@@ -156,7 +156,7 @@ export async function sendMessageChat(userMessage, promptInput, sendButton) {
 
 // editMessage → atualiza o conteúdo de uma mensagem específica no Firestore com o novo texto
 export async function editMessage(messageId, newText) {
-    
+
     const messageRef = doc(db, 'messages', messageId);  
     // Cria uma referência direta ao documento no Firestore com base no ID
 
@@ -188,7 +188,7 @@ export async function nukeDatabase() {
 
         console.log("[NET][INIT] messagesCollection:", messagesCollection, "| typeof:", typeof messagesCollection);
 
-        messagesCollection.get().then(snapshot => {
+        getDocs(messagesCollection).then(snapshot => {
 
             console.log("[NET][RETURN] Snapshot de messages recebido:", snapshot);
 
