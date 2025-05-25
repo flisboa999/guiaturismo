@@ -1,6 +1,7 @@
 
-const loadingIndicator = document.getElementById('loading');  // Onde indica se está processando a mensagem
+import { nukeDatabase } from './network.js';
 
+const loadingIndicator = document.getElementById('loading');  // Onde indica se está processando a mensagem
 
 // Função sanitize → sanitiza qualquer input para evitar injeção de código malicioso (XSS)
 // Cria um elemento <div> temporário no DOM (não é adicionado visualmente)
@@ -12,7 +13,6 @@ export function sanitize(input) {
     return div.innerHTML;                     // Retorna o conteúdo seguro, pronto para renderizar
 }
 
-
 // Exibe o indicador de loading → sinaliza ao usuário que uma operação está em andamento
 export function showLoading() {
     loadingIndicator.style.display = 'block';
@@ -22,7 +22,6 @@ export function showLoading() {
 export function hideLoading() {
     loadingIndicator.style.display = 'none';
 }
-
 
 // Função que recebe: 
 // - docId → ID do documento no Firestore.

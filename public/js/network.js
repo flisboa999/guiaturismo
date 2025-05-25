@@ -1,7 +1,6 @@
 // httpsCallable → permite chamar Funções Cloud diretamente do frontend (javascript) via HTTP, de forma segura e autenticada
 import { httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 
-
 // functions → permite chamar Cloud Functions configuradas no Firebase
 import { functions } from './firebase-setup.js';
 
@@ -11,13 +10,11 @@ import { addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.1
 // chatsCollection → referência central à coleção "chats" no Firestore para armazenar mensagens
 import { chatsCollection } from './state.js';
 
-
 //hideLoading → mostra o indicador de carregamento na interface
 import { showLoading } from './ui.js';
 
 // hideLoading → esconde o indicador de carregamento na interface
 import { hideLoading } from './ui.js';
-
 
 // Função assíncrona para enviar mensagem à Cloud Function do Firebase, aguardando resposta do Gemini
 export async function sendMessageToGemini(userMessage, promptInput, sendButton) {
@@ -41,7 +38,6 @@ export async function sendMessageToGemini(userMessage, promptInput, sendButton) 
 
     // Desabilita o input e o botão para evitar múltiplos envios simultâneos 
     // Funciona como um mecanismo simples de anti-flood para evitar abusos de múltiplas requisições
-
 
     showLoading(); // Mostra o loading
     console.log("[NET][CALL] Função showLoading()");
@@ -95,7 +91,6 @@ export async function sendMessageToGemini(userMessage, promptInput, sendButton) 
         console.log("[NET][UPDATE] promptInput focado");
     }
 }
-
 
 // Função sendMessageChat → grava uma nova mensagem diretamente na coleção "chats" do Firestore
 // Usada para armazenar mensagens públicas enviadas pelo usuário, sem processamento da API Gemini
@@ -155,7 +150,6 @@ export async function sendMessageChat(userMessage, promptInput, sendButton) {
 }
 
 
-
 // Edição da mensagem no Firestore
 export async function editMessage(messageId, newText) {
     firestore.collection('messages').doc(messageId).update({
@@ -167,7 +161,7 @@ export async function editMessage(messageId, newText) {
 }
 
 
-// nukeDatabase → executa deleção em massa de todos os documentos da coleção 'messages' no Firestore
+// nukeDatabase → deleta todos documentos da coleção 'messages' no Firestore
 export async function nukeDatabase() {
 
     console.log("[NET][CALL] Função nukeDatabase chamada");
