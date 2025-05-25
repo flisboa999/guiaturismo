@@ -1,105 +1,167 @@
-/* Fonte limpa e moderna */
+/* Define estilo global: fonte moderna, layout centralizado, tema escuro */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fonte limpa e legível */
     margin: 0;
     padding: 0;
-    background-color: #121212; /* Dark background */
-    color: #e0e0e0; /* Texto claro */
-    display: flex;
+    background-color: #121212; /* Fundo escuro para contraste */
+    color: #e0e0e0; /* Texto claro para boa leitura */
+    display: flex; /* Centraliza o conteúdo */
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100vh; /* Ocupa toda a altura da tela */
 }
 
-/* Container centralizado e elegante */
+/* Container principal do chat → centralizado e com visual elegante */
 .chat-container {
     width: 100%;
-    max-width: 600px;
-    background-color: #1e1e1e; /* Fundo escuro */
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+    max-width: 600px; /* Limita largura para manter legibilidade */
+    background-color: #1e1e1e; /* Fundo do container mais claro que o body */
+    border-radius: 12px; /* Cantos arredondados para suavidade */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7); /* Sombra para profundidade */
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 15px; /* Espaçamento entre elementos internos */
 }
 
-/* Área de mensagens */
+/* Estilo do container do chat → aplica gradiente sutil e transição suave para efeito ao interagir */
+.chat-container {
+    background: linear-gradient(135deg, #1e1e1e, #2c2c2c); /* Gradiente escuro na diagonal para profundidade */
+    transition: box-shadow 0.3s ease; /* Suaviza a alteração de sombra no hover */
+}
+
+/* Ao passar o mouse sobre o container → adiciona sombra para criar efeito de elevação */
+.chat-container:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); /* Sombra mais intensa, dando destaque ao container */
+}
+
+/* Área onde as mensagens são exibidas */
 #chat-log {
-    background-color: #181818;
+    background-color: #181818; /* Contraste sutil com container */
     padding: 15px;
-    border-radius: 8px;
-    height: 300px;
-    overflow-y: auto;
+    border-radius: 8px; /* Cantos arredondados */
+    height: 300px; /* Altura fixa com rolagem */
+    overflow-y: auto; /* Habilita scroll vertical */
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 10px; /* Espaço entre as mensagens */
 }
 
-/* Mensagens do usuário */
+/* Aplica animação de entrada suave para cada mensagem adicionada */
+#chat-log > div {
+    animation: fadeInUp 0.3s ease forwards; /* Suaviza a inserção das mensagens */
+}
+
+/* Define animação fadeInUp → mensagem sobe levemente ao aparecer */
+@keyframes fadeInUp {
+    from {
+        opacity: 0; /* Começa invisível */
+        transform: translateY(10px); /* Deslocamento inicial para baixo */
+    }
+    to {
+        opacity: 1; /* Fica visível */
+        transform: translateY(0); /* Posição original */
+    }
+}
+
+
+
+/* Personaliza a barra de rolagem do chat para combinar com o tema escuro e manter estética consistente */
+#chat-log {
+    scrollbar-width: thin; /* Barra fina em navegadores que suportam (Firefox) */
+    scrollbar-color: #6a11cb #1e1e1e; /* Cor do thumb (roxo) e track (fundo escuro) */
+}
+
+/* Define largura da scrollbar no Chrome, Edge e Safari */
+#chat-log::-webkit-scrollbar {
+    width: 8px; /* Barra estreita para visual discreto */
+}
+
+/* Estilo do trilho (track) da scrollbar */
+#chat-log::-webkit-scrollbar-track {
+    background: #1e1e1e; /* Mantém coerência com o fundo do chat */
+}
+
+/* Estilo do controle (thumb) da scrollbar */
+#chat-log::-webkit-scrollbar-thumb {
+    background: #6a11cb; /* Cor vibrante para destacar a barra de rolagem */
+    border-radius: 4px; /* Cantos arredondados para aparência suave */
+}
+
+/* Estilo das mensagens enviadas pelo usuário */
 .user-message {
-    background-color: #333;
+    background-color: #333; /* Fundo escuro diferenciado */
     padding: 10px 15px;
     border-radius: 10px;
-    align-self: flex-end;
-    max-width: 80%;
-    word-break: break-word;
+    align-self: flex-end; /* Alinha à direita */
+    max-width: 80%; /* Evita que ocupe toda a largura */
+    word-break: break-word; /* Quebra palavras longas */
 }
 
-/* Mensagens do bot */
+/* Estilo das mensagens enviadas pelo bot */
 .bot-message {
-    background-color: #252525;
+    background-color: #252525; /* Cor distinta das mensagens do usuário */
     padding: 10px 15px;
     border-radius: 10px;
-    align-self: flex-start;
+    align-self: flex-start; /* Alinha à esquerda */
     max-width: 80%;
     word-break: break-word;
 }
 
-/* Área de input */
+/* Área de input: input + botão alinhados lado a lado */
 .input-area {
     display: flex;
-    gap: 10px;
+    gap: 10px; /* Espaço entre o input e o botão */
 }
 
-/* Campo de input */
-#prompt-input {
-    flex: 1;
-    padding: 10px 15px;
-    border-radius: 8px;
-    border: none;
-    background-color: #2c2c2c;
-    color: #e0e0e0;
-    outline: none;
+/* Quando o input recebe foco → borda e brilho para destacar */
+#prompt-input:focus {
+    border: 2px solid #6a11cb; /* Cor roxa na borda */
+    box-shadow: 0 0 10px rgba(106, 17, 203, 0.5); /* Brilho suave */
 }
 
-/* Botão de envio */
+/* Estilo padrão do placeholder → cor e transição suave */
+#prompt-input::placeholder {
+    color: #888; /* Tom neutro e discreto */
+    opacity: 0.7; /* Visível, mas não chamativo */
+    transition: opacity 0.3s ease; /* Transição suave ao focar */
+}
+
+/* Quando o input recebe foco → placeholder fica mais transparente */
+#prompt-input:focus::placeholder {
+    opacity: 0.3; /* Menos destacado para priorizar o conteúdo digitado */
+}
+
+/* Estilo do botão de envio → aparência moderna e chamativa */
 #send-button {
     padding: 10px 20px;
     border: none;
     border-radius: 8px;
-    background: linear-gradient(45deg, #6a11cb, #2575fc);
-    color: #fff;
+    background: linear-gradient(45deg, #6a11cb, #2575fc); /* Gradiente vibrante */
+    color: #fff; /* Texto branco para contraste */
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease; /* Suaviza efeitos ao interagir */
 }
 
+/* Efeito visual quando o mouse passa sobre o botão */
 #send-button:hover {
-    background: linear-gradient(45deg, #2575fc, #6a11cb);
+    background: linear-gradient(45deg, #2575fc, #6a11cb); /* Inverte o gradiente */
+    transform: scale(1.05); /* Aumenta ligeiramente o tamanho */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Sombra sutil para destaque */
 }
 
-/* Loading */
+/* Estilo do indicador de loading → texto discreto */
 #loading {
     text-align: center;
     font-size: 0.9em;
-    color: #888;
+    color: #888; /* Tom neutro para não chamar muita atenção */
 }
 
-/* Select */
+/* Estilo do seletor de tipo de mensagem */
 #message-type {
     padding: 8px 12px;
     border-radius: 8px;
     border: none;
-    background-color: #2c2c2c;
-    color: #e0e0e0;
+    background-color: #2c2c2c; /* Fundo escuro coerente com o tema */
+    color: #e0e0e0; /* Texto claro para legibilidade */
 }
