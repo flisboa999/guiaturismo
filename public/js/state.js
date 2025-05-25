@@ -33,7 +33,7 @@ export function initSnapshot(chatsCollection, renderMessage, chatLog) {
 
             // Chama renderMessage para inserir a nova mensagem na UI de forma dinâmica e incremental
             // Passa: 1) ID único do doc (para rastreamento e manipulação futura); 2) dados da mensagem
-            renderMessage(change.doc.id, change.doc.data());
+            renderMessage(change.doc.id, change.doc.data(), chatLog);
         }
     });
 });
