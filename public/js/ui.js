@@ -78,3 +78,70 @@ export function renderMessage(docId, data, chatLog) {
     chatLog.scrollTop = chatLog.scrollHeight;
     console.log("[UI][UPDATE] chatLog scrolado para o final. scrollTop:", chatLog.scrollTop);
 }
+
+// renderAdminControls → cria e insere dinamicamente o painel de controle administrativo na interface
+function renderAdminControls() {
+
+    console.log("[UI][CALL] Função renderAdminControls chamada");
+
+    const adminPanel = document.createElement('div');// Cria container para centralizar os controles admin
+    
+    console.log("[UI][INIT] adminPanel criado:", adminPanel, "| typeof:", typeof adminPanel);
+
+    adminPanel.id = 'admin-panel'; // Define ID para possível estilização ou referência
+    
+    console.log("[UI][UPDATE] adminPanel.id definido:", adminPanel.id);
+
+    const nukeButton = document.createElement('button'); // Cria botão específico para a ação de deletar banco
+    
+    console.log("[UI][INIT] nukeButton criado:", nukeButton, "| typeof:", typeof nukeButton);
+
+    nukeButton.textContent = '💣 Nuke Banco'; // Texto claro e visualmente impactante
+    
+    console.log("[UI][UPDATE] nukeButton.textContent definido:", nukeButton.textContent);
+
+    nukeButton.style.background = 'red';  // Cor vermelha para transmitir perigo
+    nukeButton.style.color = 'white';   // Contraste para legibilidade
+   
+    console.log("[UI][UPDATE] nukeButton estilo definido: background:", nukeButton.style.background, ", color:", nukeButton.style.color);
+
+    nukeButton.onclick = nukeDatabase;// Define evento → executa a função nukeDatabase ao clicar
+    
+    console.log("[UI][BIND] nukeButton.onclick definido para nukeDatabase");
+
+    adminPanel.appendChild(nukeButton);// Insere o botão dentro do painel admin
+    
+    console.log("[UI][UPDATE] nukeButton adicionado ao adminPanel");
+
+    const chatContainer = document.querySelector('.chat-container');  
+    
+    console.log("[UI]][SELECT] chatContainer encontrado:", chatContainer, "| typeof:", typeof chatContainer);
+
+    chatContainer.appendChild(adminPanel); 
+    
+    console.log("[UI][UPDATE] adminPanel adicionado ao chatContainer");
+}
+
+
+// updateRenderedMessage → atualiza dinamicamente o conteúdo de uma mensagem existente na interface
+function updateRenderedMessage(docId, newData) {
+
+    console.log("[UI][CALL] Função updateRenderedMessage chamada com docId:", docId, " | typeof:", typeof docId);
+    
+    console.log("[UI][INIT] newData recebido:", newData, "| typeof:", typeof newData);
+
+    const messageElement = document.getElementById(`msg-${docId}`); // Busca o elemento pelo ID único gerado no render
+    console.log("[UI][SELECT] messageElement buscado:", messageElement, "| typeof:", typeof messageElement);
+
+    if (messageElement) {
+        const sanitizedPrompt = sanitize(newData.prompt);
+        console.log("[UI][INIT] sanitizedPrompt:", sanitizedPrompt, "| typeof:", typeof sanitizedPrompt);
+
+        messageElement.innerHTML = `<strong>Usuário:</strong> ${sanitizedPrompt}`; 
+        console.log("[UI][UPDATE] messageElement.innerHTML atualizado:", messageElement.innerHTML);
+        
+        // 🔧 Pode adicionar nova renderização para response, se necessário
+    } else {
+        console.warn("[UI][WARN] messageElement não encontrado para docId:", docId);
+    }
+}

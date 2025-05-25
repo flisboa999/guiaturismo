@@ -153,3 +153,57 @@ export async function sendMessageChat(userMessage, promptInput, sendButton) {
         promptInput.focus(); // Foco automático no input → melhora a experiência e agilidade do usuário
 }
 }
+
+
+// nukeDatabase → executa deleção em massa de todos os documentos da coleção 'messages' no Firestore
+function nukeDatabase() {
+
+    console.log("[NET][CALL] Função nukeDatabase chamada");
+
+    const confirmNuke = confirm("Tem certeza? Vai apagar TUDO!");  
+
+    console.log("[NET][INIT] confirmNuke:", confirmNuke, "| typeof:", typeof confirmNuke);
+
+    if (confirmNuke) {
+
+        console.log("[NET][CHECK] Usuário confirmou a exclusão em massa");
+
+        const messagesCollection = firestore.collection('messages');
+
+        console.log("[NET][INIT] messagesCollection:", messagesCollection, "| typeof:", typeof messagesCollection);
+
+        messagesCollection.get().then(snapshot => {
+
+            console.log("[NET][RETURN] Snapshot de messages recebido:", snapshot);
+
+            snapshot.forEach(doc => {
+
+                console.log("[NET][ITERATE] Deletando doc.id:", doc.id);
+
+                doc.ref.delete().then(() => {
+
+                    console.log("[NET][UPDATE] Documento deletado com sucesso:", doc.id);
+
+                }).catch(deleteError => {
+
+                    console.error("[NET][ERROR] Erro ao deletar doc.id:", doc.id, "| Erro:", deleteError);
+                });
+            });
+
+            sendSystemMessage("💣 Banco apagado pelo admin.");
+
+            console.log("[NET][CALL] Mensagem de sistema enviada: Banco apagado pelo admin.");
+
+        }).catch(getError => {
+
+            console.error("[NET][ERROR] Erro ao obter snapshot de messages:", getError);
+
+        });
+
+    } else {
+
+        console.log("[NET][CHECK] Usuário cancelou a exclusão em massa");
+    }
+}
+
+

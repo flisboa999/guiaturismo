@@ -21,20 +21,33 @@ export const chatsQuery = query(
 // Dispara automaticamente sempre que um novo documento (mensagem) é adicionado
 // Cria um listener em tempo real na coleção "chats" (Listener: "ouve" alterações em tempo real)
 
+
+// initSnapshot → inicializa listener reativo na coleção "chats"; sincroniza automaticamente a UI com mudanças em tempo real
 export function initSnapshot(chatsCollection, renderMessage, chatLog) {
 
+    // onSnapshot → escuta alterações (create, update, delete) na coleção e dispara callback ao detectar mudanças
     onSnapshot(chatsCollection, (snapshot) => {
-    
-    // Itera sobre as mudanças detectadas, evitando processar o snapshot completo desnecessariamente
-    snapshot.docChanges().forEach((change) => {
 
-        // Se a mudança for "added" → novo documento criado; ignora updates e deletes para otimizar a renderização
-        if (change.type === "added") {
+        // Itera sobre as mudanças específicas desde o último snapshot (delta, não o estado completo)
+        snapshot.docChanges().forEach((change) => {
 
-            // Chama renderMessage para inserir a nova mensagem na UI de forma dinâmica e incremental
-            // Passa: 1) ID único do doc (para rastreamento e manipulação futura); 2) dados da mensagem
-            renderMessage(change.doc.id, change.doc.data(), chatLog);
-        }
+            const docId = change.doc.id;   // ID único do documento → fundamental para identificar a mensagem na UI
+            const data = change.doc.data(); // Dados atualizados da mensagem → usados para renderizar ou atualizar
+
+            if (change.type === "added") {
+                renderMessage(docId, data, chatLog);  
+                // Nova mensagem → renderiza e adiciona dinamicamente na interface
+            }
+
+            if (change.type === "modified") {
+                updateRenderedMessage(docId, data);  
+                // Mensagem existente foi alterada → atualiza conteúdo na interface para refletir a mudança
+            }
+
+            if (change.type === "removed") {
+                removeRenderedMessage(docId);        
+                // Mensagem excluída do banco → remove da interface para manter consistência visual
+            }
+        });
     });
-});
 }

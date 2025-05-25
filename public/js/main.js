@@ -104,6 +104,16 @@ authenticateUser();
 
 
 
+// login → inicia fluxo de autenticação via popup, usando o provedor Google
+function login() {
+    signInWithPopup(auth, provider) // Abre popup de login Google e conecta ao Firebase Auth
+        .then(result => {
+            const user = result.user; // Extrai objeto do usuário autenticado
+            console.log("[AUTH] Usuário logado:", user.email); // Loga e-mail para debug e conferência
+            checkAdmin(user); // Após login, verifica se usuário é admin e executa lógica condicional
+        })
+        .catch(error => console.error("[AUTH ERROR]", error)); // Captura e exibe qualquer erro de autenticação
+}
 
 
 
