@@ -5,7 +5,7 @@ import { httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { functions } from './firebase-setup.js';
 
 // addDoc → adiciona novos documentos; serverTimestamp → gera timestamp confiável do servidor no Firestore
-import { addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { addDoc, serverTimestamp, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // chatsCollection → referência central à coleção "chats" no Firestore para armazenar mensagens
 import { chatsCollection } from './state.js';
@@ -15,6 +15,7 @@ import { showLoading, hideLoading, sendSystemMessage } from './ui.js';
 
 import { db } from './firebase-setup.js';
 import { collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 
 // Função assíncrona para enviar mensagem à Cloud Function do Firebase, aguardando resposta do Gemini
 export async function sendMessageToGemini(userMessage, promptInput, sendButton) {
@@ -152,7 +153,7 @@ export async function sendMessageChat(userMessage, promptInput, sendButton) {
 // editMessage → atualiza o conteúdo de uma mensagem específica no Firestore com o novo texto
 export async function editMessage(messageId, newText) {
 
-    const messageRef = doc(db, 'messages', messageId);  
+    const messageRef = doc(db, 'chats', messageId);  
     // Cria uma referência direta ao documento no Firestore com base no ID
 
     await updateDoc(messageRef, { text: newText });  
@@ -166,7 +167,7 @@ export async function editMessage(messageId, newText) {
     
 }
 
-// nukeDatabase → deleta todos documentos da coleção 'messages' no Firestore
+// nukeDatabase → deleta todos documentos da coleção 'chats' no Firestore
 export async function nukeDatabase() {
     console.log("[NET][CALL] Função nukeDatabase chamada");
 
@@ -176,7 +177,7 @@ export async function nukeDatabase() {
     if (confirmNuke) {
         console.log("[NET][CHECK] Usuário confirmou a exclusão em massa");
 
-        const messagesCollection = collection(db, 'messages');
+        const messagesCollection = collection(db, 'chats');
         console.log("[NET][INIT] messagesCollection:", messagesCollection);
 
         try {
@@ -186,7 +187,7 @@ export async function nukeDatabase() {
             snapshot.forEach((document) => {
                 console.log("[NET][ITERATE] Deletando doc.id:", document.id);
 
-                deleteDoc(doc(db, 'messages', document.id))
+                deleteDoc(doc(db, 'chats', document.id))
                     .then(() => {
                         console.log("[NET][UPDATE] Documento deletado com sucesso:", document.id);
                     })
