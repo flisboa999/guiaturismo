@@ -1,3 +1,5 @@
+
+
 // httpsCallable → permite chamar Funções Cloud diretamente do frontend (javascript) via HTTP, de forma segura e autenticada
 import { httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 
@@ -15,6 +17,9 @@ import { showLoading } from './ui.js';
 
 // hideLoading → esconde o indicador de carregamento na interface
 import { hideLoading } from './ui.js';
+
+import { db } from './firebase-setup.js';
+import { collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Função assíncrona para enviar mensagem à Cloud Function do Firebase, aguardando resposta do Gemini
 export async function sendMessageToGemini(userMessage, promptInput, sendButton) {
@@ -149,17 +154,22 @@ export async function sendMessageChat(userMessage, promptInput, sendButton) {
 }
 }
 
-
-// Edição da mensagem no Firestore
+// editMessage → atualiza o conteúdo de uma mensagem específica no Firestore com o novo texto
 export async function editMessage(messageId, newText) {
-    firestore.collection('messages').doc(messageId).update({
-        text: newText
-    }).then(() => {
-        console.log('Mensagem editada');
-        location.reload();  // Simples: recarrega para ver a mudança. (Pode ser otimizado)
-    });
-}
+    
+    const messageRef = doc(db, 'messages', messageId);  
+    // Cria uma referência direta ao documento no Firestore com base no ID
 
+    await updateDoc(messageRef, { text: newText });  
+    // Atualiza o campo 'text' do documento com o novo conteúdo de forma assíncrona
+
+    console.log('Mensagem editada');  
+    // Log de confirmação para debugging
+
+    location.reload();  
+    // Força recarregamento da página para refletir a mudança de forma rápida e simplificada
+    
+}
 
 // nukeDatabase → deleta todos documentos da coleção 'messages' no Firestore
 export async function nukeDatabase() {
@@ -174,7 +184,7 @@ export async function nukeDatabase() {
 
         console.log("[NET][CHECK] Usuário confirmou a exclusão em massa");
 
-        const messagesCollection = firestore.collection('messages');
+        const messagesCollection = collection(db, 'messages');
 
         console.log("[NET][INIT] messagesCollection:", messagesCollection, "| typeof:", typeof messagesCollection);
 
