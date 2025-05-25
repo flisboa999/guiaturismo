@@ -1,17 +1,3 @@
-// Configuraçao Firebase : 
-// app → Instância do aplicativo Firebase
-// db → Instância do Firestore (banco de dados)
-// functions → Instância das Cloud Functions
-import { app, db, functions } from './firebase-setup.js';
-
-// Firestore:
-// collection → cria ou referencia uma coleção, ponto de entrada para operações CRUD (Create,Read,Update,Delete)
-// addDoc → insere um novo documento automaticamente com ID único
-// serverTimestamp → gera timestamp confiável do servidor, evitando dependência do relógio do cliente
-// onSnapshot → listener reativo que detecta e responde a mudanças (create, update, delete) em tempo real
-// query, orderBy → cria consultas complexas e ordena resultados de forma eficiente
-
-import { collection, addDoc, serverTimestamp, } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // auth → gerencia autenticação e sessões seguras no Firebase; provider → configura OAuth para login via Google
 import { auth, provider } from './firebase-setup.js';
@@ -26,15 +12,7 @@ import { sendMessageToGemini, sendMessageChat } from './network.js';
 import { chatsCollection, initSnapshot } from './state.js';
 
 // renderMessage → função responsável por criar e inserir dinamicamente elementos de mensagem no chat-log da interface
-import { renderMessage, renderAdminControls, updateRenderedMessage } from './ui.js';
-
-
-
-
-// Função de timestamp: Simples, facilita o debug e armazenamento de logs
-function timestamp() {
-  return `[${new Date().toLocaleString()}]`;
-}
+import { renderMessage, renderAdminControls, updateRenderedMessage, showEditPopup } from './ui.js';
 
 // Referência para interagir e aplicar métodos nos elementos HTML.
 // Os ids possuem o mesmo nome das variáveis
@@ -68,8 +46,6 @@ promptInput.addEventListener('keypress', function(event) {
         handleSendMessage(); // Aqui usamos () → executa a função imediatamente
     }
 });
-
-console.log("[MAIN][INIT] declarou userName, userEmail, userRole");
 
 let userName = '';  // Variável para guardar nome
 let userEmail = ''; // Variável para guardar email
@@ -114,17 +90,15 @@ function authenticateUser() {
         .catch((error) => console.error("[MAIN][ERROR]Erro no login:", error));  // Trata erro
 }
 
-
 // Função para definir se é admin ou user
 function defineUserRole(email) {
-
     console.log("[MAIN][CALL] chamou defineUserRole");
 
-    if (email === 'flisboa.tec@gmail.com') {  // Se for admin
+    if (email.toLowerCase() === 'flisboa.tec@gmail.com') {
         userRole = 'admin';
         console.log(`[MAIN][CHECK] O userRole é ${userRole}`);
-        renderAdminControls();            // Renderiza botões admin
-    } else {                             // Senão
+        renderAdminControls();
+    } else {
         userRole = 'user';
         console.log(`[MAIN][CHECK] O userRole é ${userRole}`);
     }
@@ -133,24 +107,6 @@ function defineUserRole(email) {
 // Chama autenticação ao carregar o app
 authenticateUser();
 
-// login → inicia fluxo de autenticação via popup, usando o provedor Google
-// OBS: TEM QUE IMPLEMENTAR BOTÃO DE LOGIN NO HTML E NO CSS
-function login() {
-
-    signInWithPopup(auth, provider) // Abre popup de login Google e conecta ao Firebase Auth
-
-        .then(result => {
-
-            const user = result.user; // Extrai objeto do usuário autenticado
-
-            console.log("[AUTH] Usuário logado:", user.email); // Loga e-mail para debug e conferência
-
-            checkAdmin(user); // Após login, verifica se usuário é admin e executa lógica condicional
-
-        })
-
-        .catch(error => console.error("[AUTH ERROR]", error)); // Captura e exibe qualquer erro de autenticação
-}
 
 
 // handleSendMessage - Função que decide o que fazer quando o usuário envia uma mensagem ()
@@ -178,7 +134,6 @@ function handleSendMessage() {
 
     console.log("[CHECK] userMessage válida:", userMessage);
 
-
     // Referência à tag HTML <select>):
     // <select id="message-type">; value="chat" ou "gemini"
 
@@ -194,6 +149,8 @@ function handleSendMessage() {
 
         // Chama a função que envia a mensagem para o Gemini (IA)
         sendMessageToGemini(userMessage, promptInput, chatLog);
+        promptInput.value = '';
+
 
     } else {
 
@@ -201,5 +158,8 @@ function handleSendMessage() {
 
         // Se não for "gemini", envia a mensagem como chat público
         sendMessageChat(userMessage, promptInput, chatLog);
+
+        promptInput.value = '';
+
     }
 }

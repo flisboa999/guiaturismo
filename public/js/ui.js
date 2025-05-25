@@ -27,9 +27,10 @@ export function hideLoading() {
 // Função que recebe: 
 // - docId → ID do documento no Firestore.
 // - data → dados da mensagem (prompt, response, etc.).
-export function renderMessage(docId, data, chatLog) {
+export function renderMessage(docId, data, chatLog, userRole) {
 
     console.log("[UI][CALL] renderMessage docId:", docId, "| typeof:", typeof docId);
+
     console.log("[UI][CALL] renderMessage data:", data, "| typeof:", typeof data);
 
     // Cria um novo elemento HTML <div> para exibir a mensagem.
@@ -47,22 +48,21 @@ export function renderMessage(docId, data, chatLog) {
 
     // Se a mensagem tem uma resposta (ou seja, não é null ou undefined):
     if (data.response) {
+
         console.log("[UI][CHECK] data.response existe:", data.response, "| typeof:", typeof data.response);
 
-        // Adiciona nova linha com a resposta do Gemini.
         content += `<br><strong>Gemini:</strong> ${sanitize(data.response)}`;
 
         console.log("[UI][UPDATE] content atualizado com response:", content);
 
-        // Adiciona classe de mensagem do bot
         messageElement.classList.add('bot-message');
-        console.log("[UI][UPDATE] Classe 'bot-message' adicionada ao messageElement");
 
+        console.log("[UI][UPDATE] Classe 'bot-message' adicionada ao messageElement");
     } else {
         console.log("[UI][CHECK] data.response não existe");
 
-        // Adiciona classe de mensagem do usuário
         messageElement.classList.add('user-message');
+
         console.log("[UI][UPDATE] Classe 'user-message' adicionada ao messageElement");
     }
 
@@ -70,7 +70,23 @@ export function renderMessage(docId, data, chatLog) {
     messageElement.innerHTML = content;
     console.log("[UI][UPDATE] messageElement.innerHTML definido:", messageElement.innerHTML);
 
-    // Adiciona (append) a nova div com a mensagem ao final do chatLog.
+    // Se o usuário for admin, adiciona o ícone de edição
+    if (userRole === 'admin') {
+        const editIcon = document.createElement('span');
+        editIcon.textContent = '✏️';
+        editIcon.classList.add('edit-icon');
+        editIcon.style.cursor = 'pointer';
+        editIcon.style.marginLeft = '10px';
+
+        editIcon.addEventListener('click', () => {
+            openEditPopup(docId, data.prompt);
+        });
+
+        messageElement.appendChild(editIcon);
+        console.log("[UI][UPDATE] Ícone de edição '✏️' adicionado ao messageElement");
+    }
+
+    // Adiciona a nova div com a mensagem ao final do chatLog.
     chatLog.appendChild(messageElement);
     console.log("[UI][UPDATE] messageElement adicionado ao chatLog");
 
@@ -78,6 +94,7 @@ export function renderMessage(docId, data, chatLog) {
     chatLog.scrollTop = chatLog.scrollHeight;
     console.log("[UI][UPDATE] chatLog scrolado para o final. scrollTop:", chatLog.scrollTop);
 }
+
 
 // renderAdminControls → cria e insere dinamicamente o painel de controle administrativo na interface
 export function renderAdminControls() {
@@ -148,4 +165,23 @@ export function updateRenderedMessage(docId, newData) {
     } else {
         console.warn("[UI][WARN] messageElement não encontrado para docId:", docId);
     }
+}
+
+export function showEditPopup(currentText, callback) {  
+    // Abstração para exibir popup de edição → reutilizável para qualquer mensagem
+    // Recebe: 
+    // → currentText: texto atual da mensagem 
+    // → callback: função a ser chamada com o novo texto
+
+    const newText = prompt("Edite a mensagem:", currentText);  
+    // Exibe prompt nativo → pré-preenchido com o texto atual para facilitar edição
+
+    if (newText !== null) {  
+        // Usuário clicou em "OK" → continua
+        // Se clicar em "Cancelar" → ignora silenciosamente
+
+        callback(newText.trim());  
+        // Passa o texto editado e limpo (sem espaços extras) para a função de atualização
+    }  
+    // Se cancelou → não executa nada, mantendo o texto original
 }
