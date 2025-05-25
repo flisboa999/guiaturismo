@@ -157,7 +157,7 @@ export async function sendMessageChat(userMessage, promptInput, sendButton) {
 
 
 // Edição da mensagem no Firestore
-function editMessage(messageId, newText) {
+export async function editMessage(messageId, newText) {
     firestore.collection('messages').doc(messageId).update({
         text: newText
     }).then(() => {
@@ -168,7 +168,7 @@ function editMessage(messageId, newText) {
 
 
 // nukeDatabase → executa deleção em massa de todos os documentos da coleção 'messages' no Firestore
-function nukeDatabase() {
+export async function nukeDatabase() {
 
     console.log("[NET][CALL] Função nukeDatabase chamada");
 
