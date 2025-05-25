@@ -66,18 +66,19 @@ export async function sendMessageToGemini(userMessage, promptInput, sendButton) 
         // Obtém uma referência para a função em nuvem chamada 'sendMessage'
         const callSendMessage = httpsCallable(functions, 'sendMessage');
 
-        console.log("[NET][CALL] Função Firebase sendMessage preparada");
+        console.log("[NET][INIT] Variável callSendMessage declarada , executa httpsCallable");
+
+        console.log("[NET][INIT] Iniciando variável result para aguardar resposta");
 
         // Executa a chamada assíncrona à função do backend, passando o payload
         const result = await callSendMessage(payload);  
 
-        console.log("[NET][RETURN] Resposta recebida da Firebase:", result);
+        console.log("[NET][RETURN] Resposta recebida (result): ", result ,"| typeof:", typeof result);
 
-        // (Possível extensão: aqui poderia atualizar a UI com a resposta usando updateLastGeminiMessage)
 
     } catch (error) {
         // Captura erros: problemas de rede, falhas no backend ou erros da API do Gemini
-        console.error("[NET][ERROR] Erro ao chamar a função Firebase sendMessage:", error);
+        console.error("[NET][ERROR] Erro ao chamar a função Firebase sendMessage: ", error);
 
     } finally {
         // Executa sempre: reativa a interface do usuário, permitindo novos envios
@@ -100,10 +101,22 @@ export async function sendMessageToGemini(userMessage, promptInput, sendButton) 
 // Usada para armazenar mensagens públicas enviadas pelo usuário, sem processamento da API Gemini
 export async function sendMessageChat(userMessage, promptInput, sendButton) {
 
+    console.log("[NET][CALL] sendMessageChat foi chamada");
+
+    console.log("[NET][UPDATE]] preparando para desabilitar promptInput e sendButton");
+
+
     promptInput.disabled = true;
     sendButton.disabled = true;
 
+    console.log("[NET][UPDATE]] promptInput e sendButton desabilitados");
+
     showLoading();  // Mostra loading
+
+    console.log("[NET][CALL]] Função showLoading() chamada");
+
+
+    console.log("[NET][INIT]] iniciando bloco try para executar addDoc com chatsCollection como parametro");
 
     try {
         await addDoc(chatsCollection, {  
@@ -114,20 +127,29 @@ export async function sendMessageChat(userMessage, promptInput, sendButton) {
             userAgent: navigator.userAgent, // Registra informações sobre o dispositivo/navegador do usuário
         });
 
-        console.log("[SUCCESS] Mensagem enviada com sucesso para Firestore."); 
+        console.log("[NET][SUCCESS] Mensagem enviada com sucesso para Firestore."); 
         // Log de sucesso → facilita monitoramento e debugging
 
     } catch (error) {
-        console.error("[ERROR] Falha ao enviar mensagem no chat:", error); 
+        console.error("[NET][ERROR] Falha ao enviar mensagem no chat:", error); 
         // Log de erro técnico para desenvolvedor
 
         alert("Erro ao enviar a mensagem. Por favor, tente novamente.");  
         // Feedback visual para o usuário → melhora a experiência em caso de falha
     } finally {
 
+
+        console.log("[NET][UPDATE]] preparando para ativar novamente promptInput e sendButton");
+
         promptInput.disabled = false;   // Reativa o input → permite nova interação do usuário
         sendButton.disabled = false;    // Reativa o botão → pronto para novos envios
-        hideLoading();                  // Oculta o indicador de loading → operação concluída
-        promptInput.focus();            // Foco automático no input → melhora a experiência e agilidade do usuário
+
+        console.log("[NET][UPDATE]] promptInput e sendButton reativados");
+
+        hideLoading(); // Oculta o indicador de loading → operação concluída
+
+        console.log("[NET][CALL]] Função hideLoading() chamada");
+
+        promptInput.focus(); // Foco automático no input → melhora a experiência e agilidade do usuário
 }
 }
