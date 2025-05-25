@@ -114,6 +114,11 @@ export function renderAdminControls() {
     console.log("[UI][INIT] nukeButton criado:", nukeButton, "| typeof:", typeof nukeButton);
 
     nukeButton.textContent = '💣 Nuke Banco'; // Texto claro e visualmente impactante
+
+    nukeButton.addEventListener('click', nukeDatabase);
+
+    console.log("[UI][UPDATE] adicionou event listener a nukeButton , recebendo args 'click' e nukeDatabase");
+    
     
     console.log("[UI][UPDATE] nukeButton.textContent definido:", nukeButton.textContent);
 
@@ -122,7 +127,6 @@ export function renderAdminControls() {
    
     console.log("[UI][UPDATE] nukeButton estilo definido: background:", nukeButton.style.background, ", color:", nukeButton.style.color);
 
-    nukeButton.onclick = nukeDatabase;// Define evento → executa a função nukeDatabase ao clicar
     
     console.log("[UI][BIND] nukeButton.onclick definido para nukeDatabase");
 
@@ -133,6 +137,12 @@ export function renderAdminControls() {
     const chatContainer = document.querySelector('.chat-container');  
     
     console.log("[UI]][SELECT] chatContainer encontrado:", chatContainer, "| typeof:", typeof chatContainer);
+
+    if (!chatContainer) {
+
+        console.error("[UI][ERROR] .chat-container não encontrado!");
+        return;
+    }
 
     chatContainer.appendChild(adminPanel); 
     

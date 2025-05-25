@@ -3,7 +3,7 @@
 import { auth, provider } from './firebase-setup.js';
 
 // Importa função para popup de login
-import { signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // sendMessageToGemini → integra frontend com API Gemini via Cloud Functions; sendMessageChat → grava mensagens direto no Firestore
 import { sendMessageToGemini, sendMessageChat, nukeDatabase } from './network.js';
@@ -104,10 +104,32 @@ function defineUserRole(email) {
     }
 }
 
-// Chama autenticação ao carregar o app
-authenticateUser();
+onAuthStateChanged(auth, (user) => {  
+    // Listener reativo → monitora automaticamente alterações na autenticação do usuário
+    // Dispara sempre que: usuário loga, desloga ou muda de status
 
+    if (user) {  
+        // Se usuário já está autenticado → mantém sessão ativa sem necessidade de novo login
 
+        console.log(`[MAIN][AUTH] Usuário já logado: ${user.displayName} (${user.email})`);  
+        // Loga para rastreamento e conferência rápida
+
+        userName = user.displayName;  
+        userEmail = user.email;  
+        // Atualiza variáveis globais com dados do usuário atual
+
+        defineUserRole(userEmail);  
+        // Define role (admin/user) com base no email → controla acesso a funções sensíveis
+    } else {  
+        // Se não há usuário autenticado → inicia fluxo de autenticação
+
+        console.log("[MAIN][AUTH] Nenhum usuário logado. Solicitando autenticação...");  
+        // Loga status para facilitar debug de fluxo
+
+        authenticateUser();  
+        // Aciona popup de autenticação Google → conecta usuário ao sistema
+    }
+});
 
 // handleSendMessage - Função que decide o que fazer quando o usuário envia uma mensagem ()
 function handleSendMessage() {
