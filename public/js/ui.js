@@ -80,7 +80,7 @@ export function renderMessage(docId, data, chatLog) {
 }
 
 // renderAdminControls → cria e insere dinamicamente o painel de controle administrativo na interface
-function renderAdminControls() {
+export function renderAdminControls() {
 
     console.log("[UI][CALL] Função renderAdminControls chamada");
 
@@ -124,7 +124,7 @@ function renderAdminControls() {
 
 
 // updateRenderedMessage → atualiza dinamicamente o conteúdo de uma mensagem existente na interface
-function updateRenderedMessage(docId, newData) {
+export function updateRenderedMessage(docId, newData) {
 
     console.log("[UI][CALL] Função updateRenderedMessage chamada com docId:", docId, " | typeof:", typeof docId);
     
@@ -144,7 +144,7 @@ function updateRenderedMessage(docId, newData) {
         console.log("[UI][UPDATE] messageElement.innerHTML atualizado:", messageElement.innerHTML);
         
         // Pode adicionar nova renderização para response, se necessário
-        
+
     } else {
         console.warn("[UI][WARN] messageElement não encontrado para docId:", docId);
     }
