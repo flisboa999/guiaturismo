@@ -134,13 +134,17 @@ function updateRenderedMessage(docId, newData) {
     console.log("[UI][SELECT] messageElement buscado:", messageElement, "| typeof:", typeof messageElement);
 
     if (messageElement) {
+
         const sanitizedPrompt = sanitize(newData.prompt);
+
         console.log("[UI][INIT] sanitizedPrompt:", sanitizedPrompt, "| typeof:", typeof sanitizedPrompt);
 
-        messageElement.innerHTML = `<strong>Usuário:</strong> ${sanitizedPrompt}`; 
+        messageElement.innerHTML = `<strong>Usuário:</strong> ${sanitizedPrompt}`;
+
         console.log("[UI][UPDATE] messageElement.innerHTML atualizado:", messageElement.innerHTML);
         
-        // 🔧 Pode adicionar nova renderização para response, se necessário
+        // Pode adicionar nova renderização para response, se necessário
+        
     } else {
         console.warn("[UI][WARN] messageElement não encontrado para docId:", docId);
     }

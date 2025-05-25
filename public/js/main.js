@@ -16,6 +16,9 @@ import { collection, addDoc, serverTimestamp, } from "https://www.gstatic.com/fi
 // auth → gerencia autenticação e sessões seguras no Firebase; provider → configura OAuth para login via Google
 import { auth, provider } from './firebase-setup.js';
 
+// Importa função para popup de login
+import { signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 // sendMessageToGemini → integra frontend com API Gemini via Cloud Functions; sendMessageChat → grava mensagens direto no Firestore
 import { sendMessageToGemini, sendMessageChat } from './network.js';
 
@@ -23,7 +26,9 @@ import { sendMessageToGemini, sendMessageChat } from './network.js';
 import { chatsCollection, initSnapshot } from './state.js';
 
 // renderMessage → função responsável por criar e inserir dinamicamente elementos de mensagem no chat-log da interface
-import { renderMessage } from './ui.js';
+import { renderMessage, renderAdminControls, updateRenderedMessage } from './ui.js';
+
+
 
 
 // Função de timestamp: Simples, facilita o debug e armazenamento de logs
@@ -41,7 +46,10 @@ const promptInput = document.getElementById('prompt-input'); // Onde o usuário 
 const sendButton = document.getElementById('send-button'); // Onde o usuário clica para enviar a mensagem.
 const chatLog = document.getElementById('chat-log'); // Onde todas as mensagems do usuário e do Gemini são exibidas.
 
+console.log("[INIT] promptInput, sendButton, chatLog");
+
 initSnapshot(chatsCollection, renderMessage, chatLog);
+
 console.log("[CALL] initSnapShot");
 
 // Event listeners → permite chat interativo e responsivo:
@@ -63,8 +71,6 @@ promptInput.addEventListener('keypress', function(event) {
 
 
 
-// Importa função para popup de login
-import { signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 let userName = '';  // Variável para guardar nome
 let userEmail = ''; // Variável para guardar email
@@ -86,9 +92,11 @@ function authenticateUser() {
 }
 
 
-
 // Função para definir se é admin ou user
 function defineUserRole(email) {
+
+    console.log("[CALL] defineUserRole")
+
     if (email === 'admin@seusite.com') {  // Se for admin
         userRole = 'admin';
         console.log('Usuário é ADMIN');
@@ -103,18 +111,23 @@ function defineUserRole(email) {
 authenticateUser();
 
 
-
 // login → inicia fluxo de autenticação via popup, usando o provedor Google
 function login() {
+
     signInWithPopup(auth, provider) // Abre popup de login Google e conecta ao Firebase Auth
+
         .then(result => {
+
             const user = result.user; // Extrai objeto do usuário autenticado
+
             console.log("[AUTH] Usuário logado:", user.email); // Loga e-mail para debug e conferência
+
             checkAdmin(user); // Após login, verifica se usuário é admin e executa lógica condicional
+
         })
+        
         .catch(error => console.error("[AUTH ERROR]", error)); // Captura e exibe qualquer erro de autenticação
 }
-
 
 
 // handleSendMessage - Função que decide o que fazer quando o usuário envia uma mensagem ()
