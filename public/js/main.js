@@ -46,11 +46,11 @@ const promptInput = document.getElementById('prompt-input'); // Onde o usuário 
 const sendButton = document.getElementById('send-button'); // Onde o usuário clica para enviar a mensagem.
 const chatLog = document.getElementById('chat-log'); // Onde todas as mensagems do usuário e do Gemini são exibidas.
 
-console.log("[INIT] promptInput, sendButton, chatLog");
+console.log("[MAIN][INIT] declarou promptInput, sendButton, chatLog");
 
 initSnapshot(chatsCollection, renderMessage, chatLog);
 
-console.log("[CALL] initSnapShot");
+console.log("[MAIN][CALL] chamou initSnapShot");
 
 // Event listeners → permite chat interativo e responsivo:
 // - Click no botão "Enviar" → dispara envio da mensagem
@@ -69,49 +69,72 @@ promptInput.addEventListener('keypress', function(event) {
     }
 });
 
-
-
+console.log("[MAIN][INIT] declarou userName, userEmail, userRole");
 
 let userName = '';  // Variável para guardar nome
 let userEmail = ''; // Variável para guardar email
 let userRole = '';  // Variável para role: admin ou user
 
+console.log("[MAIN][INIT] declarou userName, userEmail, userRole p/ manipular dados do usuário");
+
 // Função de autenticação
 function authenticateUser() {
-    signInWithPopup(auth, provider)   // Abre popup do Google para autenticação
-        .then((result) => {
-            const user = result.user;               // Pega dados do usuário
-            userName = user.displayName;            // Nome
-            userEmail = user.email;                 // Email
 
-            console.log(`Logado como: ${userName} (${userEmail})`);  // Log
+    console.log("[MAIN][CALL] chamou authenticateUser");
+
+    console.log("[MAIN][INIT] Preparando para inicializar signInWithPopup");
+
+    signInWithPopup(auth, provider)   // Abre popup do Google para autenticação
+
+        .then((result) => {
+
+            
+            console.log("[MAIN][CALL] Executando signInWithPopup");
+
+            console.log("[MAIN][INIT] result : ", result, "| typeof:", typeof result);
+
+            console.log("[MAIN][INIT] Iniciando variável user");
+            
+            const user = result.user;               // Pega todos dados do usuário
+            
+            console.log("[MAIN][CHECK] user: ", user, "| typeof:", typeof user);
+
+            userName = user.displayName;            // Atribui Nome à variável declarada anteriormente
+            
+            console.log("[MAIN][CHECK] userName: ", userName, "| typeof:", typeof userName);
+
+            userEmail = user.email;                 // Atribui email à variável declarada anteriormente
+
+            console.log("[MAIN][INIT] Iniciando userName e userEmail");
+
+            console.log(`[MAIN][CHECK]Logado como: ${userName} (${userEmail})`);  // Log
 
             defineUserRole(userEmail);              // Define role
         })
-        .catch((error) => console.error("Erro no login:", error));  // Trata erro
+        .catch((error) => console.error("[MAIN][ERROR]Erro no login:", error));  // Trata erro
 }
 
 
 // Função para definir se é admin ou user
 function defineUserRole(email) {
 
-    console.log("[CALL] defineUserRole")
+    console.log("[MAIN][CALL] chamou defineUserRole");
 
-    if (email === 'admin@seusite.com') {  // Se for admin
+    if (email === 'flisboa.tec@gmail.com') {  // Se for admin
         userRole = 'admin';
-        console.log('Usuário é ADMIN');
+        console.log(`[MAIN][CHECK] O userRole é ${userRole}`);
         renderAdminControls();            // Renderiza botões admin
     } else {                             // Senão
         userRole = 'user';
-        console.log('Usuário comum');
+        console.log(`[MAIN][CHECK] O userRole é ${userRole}`);
     }
 }
 
 // Chama autenticação ao carregar o app
 authenticateUser();
 
-
 // login → inicia fluxo de autenticação via popup, usando o provedor Google
+// OBS: TEM QUE IMPLEMENTAR BOTÃO DE LOGIN NO HTML E NO CSS
 function login() {
 
     signInWithPopup(auth, provider) // Abre popup de login Google e conecta ao Firebase Auth
@@ -125,7 +148,7 @@ function login() {
             checkAdmin(user); // Após login, verifica se usuário é admin e executa lógica condicional
 
         })
-        
+
         .catch(error => console.error("[AUTH ERROR]", error)); // Captura e exibe qualquer erro de autenticação
 }
 
