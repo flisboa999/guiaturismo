@@ -6,7 +6,7 @@ import { auth, provider } from './firebase-setup.js';
 import { signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // sendMessageToGemini → integra frontend com API Gemini via Cloud Functions; sendMessageChat → grava mensagens direto no Firestore
-import { sendMessageToGemini, sendMessageChat } from './network.js';
+import { sendMessageToGemini, sendMessageChat, nukeDatabase } from './network.js';
 
 // chatsCollection → referência central à coleção "chats" no Firestore; initSnapshot → listener reativo para atualização automática da UI
 import { chatsCollection, initSnapshot } from './state.js';
