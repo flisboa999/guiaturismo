@@ -29,6 +29,8 @@ const db = getFirestore();
 
 console.log("[INIT] Firestore conectado");
 
+
+
 // Define a variável da chave secreta da API Gemini via Secret Manager ( gerenciamento de chaves)
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
 
@@ -76,15 +78,17 @@ exports.sendMessage = onCall(
 
     console.log("[CHECK] Prompt do usuário recebido:", userInput);
 
-    // Inicializa o cliente da API Gemini, receve a chave API como argumento
-    console.log("[INIT] Instanciando GoogleGenerativeAI");
+    // Inicializa o cliente da API Gemini, recebe a chave API como argumento
+    console.log("[INIT] Instanciando objeto da IA generativa com chave API");
     const genAI = new GoogleGenerativeAI(apiKey);
 
     // Configura o modelo do Gemini
     console.log("[INIT] Configurando e inicializando o LLM Gemini");
+
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash-latest", // Define a versão do modelo
     });
+    console.log("[INIT] Inicialização LLM Gemini finalizada");
 
     try {
 
@@ -113,10 +117,10 @@ exports.sendMessage = onCall(
       const chatDoc = {
         prompt: userInput,                         // Texto enviado
         response: geminiOutput || null,            // esposta gerada ou null
-        timestamp: FieldValue.serverTimestamp(),   // Timestamp do servidor
         sessionId: sessionId || null,              // ID da sessão
+        timestamp: FieldValue.serverTimestamp(),   // Timestamp do servidor
         userAgent: userAgent || null,              // Info do cliente
-        userId: context.auth ? context.auth.uid : null // ID do usuário autenticado ou null
+        // userId: context.auth ? context.auth.uid : null // ID do usuário autenticado ou null
       };
 
       console.log("[INIT] chatDoc criado:", chatDoc);

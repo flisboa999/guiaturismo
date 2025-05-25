@@ -26,13 +26,18 @@ const firebaseConfig = {
 
 // Inicializar App Firebase
 const app = initializeApp(firebaseConfig);
-console.log("Aplicativo Firebase Inicializado (App instanciado)");
+console.log("[SETUP][INIT] Aplicativo Firebase Inicializado");
 
 // Inicializar Firestore (database)
 const db = getFirestore(app);
 
+console.log("[SETUP][INIT] Inicializou Firestore (database)");
+
 // Inicializar functions
 const functions = getFunctions(app, "us-central1");
+
+console.log("[SETUP][INIT] Inicializou getFunctions (Funções Cloud)");
+
 
 // Opcional: Inicializar Auth
 // export const auth = getAuth(app);
@@ -43,20 +48,22 @@ if (location.hostname === "localhost") {
 
     // Emulador Firestore
     connectFirestoreEmulator(db, "localhost", 8080);
-    console.log("Conectado ao Emulador da Firestore em localhost:8080");
+    console.log("[SETUP]Conectado ao Emulador da Firestore em localhost:8080");
 
     // Emulador functions
     connectFunctionsEmulator(functions, "localhost", 5001);
-    console.log("Conectado ao Emulador Functions Emulator at localhost:5001");
+    console.log("[SETUP] Conectado ao Emulador Functions Emulator at localhost:5001");
 
     // Opcional: Emulator de autenticação
     // connectAuthEmulator(auth, "http://localhost:9099");
-    // console.log("✅ Connected to Auth Emulator at localhost:9099");
+    // console.log("Conectado ao emulador de Auth em localhost:9099");
 
     }
 
 // Inicializar analytics
 const analytics = getAnalytics(app);
 
-// Exportar o app,db,functions para usar no script.js
-export { app, db, functions };
+console.log("[SETUP] Inicializou analytics");
+
+// Exportar o app, db, functions
+export { app, db, functions, analytics };
