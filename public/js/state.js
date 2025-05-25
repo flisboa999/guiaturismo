@@ -15,11 +15,11 @@ export const chatsQuery = query(
     limit(50)                   // Limita a 50 mensagens
 );
 
-// onSnapshot → Cria listener reativo em "chats" para sincronizar a Interface (UI) em tempo real as coleções do banco de dados Firebase
-// Snapshot → Cópia fiel e instantânea dos dados no momento da mudança (create, update, delete), aciona automático no acionamento da consulta ou do listener
+// initSnapshot → Inicializa e configura listener reativo em "chats"; 
+// onSnapshot → Cria listener reativo em "chats" para sincronizar/renderizar a Interface em tempo real, baseado nas coleções do banco de dados Firestore
+// Snapshot → Cópia fiel e instantânea dos dados no momento da mudança (create, update, delete), dispara automático no acionamento de consulta ou do listener
 // Dispara automaticamente sempre que um novo documento (mensagem) é adicionado
 // Cria um listener em tempo real na coleção "chats" (Listener: "ouve" alterações em tempo real)
-
 
 export function initSnapshot(chatsCollection, renderMessage, chatLog) {
 

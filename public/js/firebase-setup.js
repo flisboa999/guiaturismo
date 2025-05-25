@@ -5,6 +5,10 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebas
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 
+// Importa a autenticação e o provedor Google
+import { getAuth, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
 // Importar Funções e Firestore (DB) da Firebase; Ambiente de Produção (Deploy na web) e teste (Emulador local)
 import { getFirestore, connectFirestoreEmulator } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getFunctions, connectFunctionsEmulator } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";

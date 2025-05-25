@@ -11,13 +11,18 @@ import { app, db, functions } from './firebase-setup.js';
 // onSnapshot → listener reativo que detecta e responde a mudanças (create, update, delete) em tempo real
 // query, orderBy → cria consultas complexas e ordena resultados de forma eficiente
 
-import { collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { collection, addDoc, serverTimestamp, } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+// auth → gerencia autenticação e sessões seguras no Firebase; provider → configura OAuth para login via Google
+import { auth, provider } from './firebase-setup.js';
 
+// sendMessageToGemini → integra frontend com API Gemini via Cloud Functions; sendMessageChat → grava mensagens direto no Firestore
 import { sendMessageToGemini, sendMessageChat } from './network.js';
 
+// chatsCollection → referência central à coleção "chats" no Firestore; initSnapshot → listener reativo para atualização automática da UI
 import { chatsCollection, initSnapshot } from './state.js';
 
+// renderMessage → função responsável por criar e inserir dinamicamente elementos de mensagem no chat-log da interface
 import { renderMessage } from './ui.js';
 
 
@@ -55,6 +60,52 @@ promptInput.addEventListener('keypress', function(event) {
         handleSendMessage(); // Aqui usamos () → executa a função imediatamente
     }
 });
+
+
+
+// Importa função para popup de login
+import { signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+let userName = '';  // Variável para guardar nome
+let userEmail = ''; // Variável para guardar email
+let userRole = '';  // Variável para role: admin ou user
+
+// Função de autenticação
+function authenticateUser() {
+    signInWithPopup(auth, provider)   // Abre popup do Google para autenticação
+        .then((result) => {
+            const user = result.user;               // Pega dados do usuário
+            userName = user.displayName;            // Nome
+            userEmail = user.email;                 // Email
+
+            console.log(`Logado como: ${userName} (${userEmail})`);  // Log
+
+            defineUserRole(userEmail);              // Define role
+        })
+        .catch((error) => console.error("Erro no login:", error));  // Trata erro
+}
+
+
+
+// Função para definir se é admin ou user
+function defineUserRole(email) {
+    if (email === 'admin@seusite.com') {  // Se for admin
+        userRole = 'admin';
+        console.log('Usuário é ADMIN');
+        renderAdminControls();            // Renderiza botões admin
+    } else {                             // Senão
+        userRole = 'user';
+        console.log('Usuário comum');
+    }
+}
+
+// Chama autenticação ao carregar o app
+authenticateUser();
+
+
+
+
+
 
 // handleSendMessage - Função que decide o que fazer quando o usuário envia uma mensagem ()
 function handleSendMessage() {
