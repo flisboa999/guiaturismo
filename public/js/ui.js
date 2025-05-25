@@ -37,45 +37,44 @@ export function renderMessage(docId, data, chatLog) {
 
     console.log("[UI][INIT] messageElement criado:", messageElement, "| typeof:", typeof messageElement);
 
-    // Adiciona a classe CSS 'message' para estilizar esse div.
+    // Adiciona a classe base 'message'
     messageElement.classList.add('message');
 
-    console.log("[UI][UPDATE] Classe 'message' adicionada ao messageElement");
-
     // Cria a variável content que vai conter o texto formatado da mensagem.
-
     let content = `<strong>Usuário:</strong> ${sanitize(data.prompt)}`;
-
 
     console.log("[UI][INIT] content criado com prompt:", content, "| typeof:", typeof content);
 
     // Se a mensagem tem uma resposta (ou seja, não é null ou undefined):
-
     if (data.response) {
-
         console.log("[UI][CHECK] data.response existe:", data.response, "| typeof:", typeof data.response);
 
-        // Adiciona uma nova linha com a resposta do Gemini.
-    
+        // Adiciona nova linha com a resposta do Gemini.
         content += `<br><strong>Gemini:</strong> ${sanitize(data.response)}`;
 
         console.log("[UI][UPDATE] content atualizado com response:", content);
 
+        // Adiciona classe de mensagem do bot
+        messageElement.classList.add('bot-message');
+        console.log("[UI][UPDATE] Classe 'bot-message' adicionada ao messageElement");
+
     } else {
-        console.log("[UI][CHECK] data.response não existe ");
+        console.log("[UI][CHECK] data.response não existe");
+
+        // Adiciona classe de mensagem do usuário
+        messageElement.classList.add('user-message');
+        console.log("[UI][UPDATE] Classe 'user-message' adicionada ao messageElement");
     }
 
-    // Define o conteúdo HTML da div como o texto formatado.
+    // Define o conteúdo HTML da div.
     messageElement.innerHTML = content;
     console.log("[UI][UPDATE] messageElement.innerHTML definido:", messageElement.innerHTML);
 
     // Adiciona (append) a nova div com a mensagem ao final do chatLog.
     chatLog.appendChild(messageElement);
-
     console.log("[UI][UPDATE] messageElement adicionado ao chatLog");
 
     // Faz o scroll automático do chat para mostrar a última mensagem.
     chatLog.scrollTop = chatLog.scrollHeight;
-    
     console.log("[UI][UPDATE] chatLog scrolado para o final. scrollTop:", chatLog.scrollTop);
 }
