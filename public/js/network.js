@@ -1,5 +1,3 @@
-
-
 // httpsCallable → permite chamar Funções Cloud diretamente do frontend (javascript) via HTTP, de forma segura e autenticada
 import { httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
 
@@ -12,11 +10,8 @@ import { addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.1
 // chatsCollection → referência central à coleção "chats" no Firestore para armazenar mensagens
 import { chatsCollection } from './state.js';
 
-//hideLoading → mostra o indicador de carregamento na interface
-import { showLoading } from './ui.js';
-
-// hideLoading → esconde o indicador de carregamento na interface
-import { hideLoading } from './ui.js';
+//Imports de UI  - funções
+import { showLoading, hideLoading, sendSystemMessage } from './ui.js';
 
 import { db } from './firebase-setup.js';
 import { collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -173,51 +168,39 @@ export async function editMessage(messageId, newText) {
 
 // nukeDatabase → deleta todos documentos da coleção 'messages' no Firestore
 export async function nukeDatabase() {
-
     console.log("[NET][CALL] Função nukeDatabase chamada");
 
-    const confirmNuke = confirm("Tem certeza? Vai apagar TUDO!");  
-
+    const confirmNuke = confirm("Tem certeza? Vai apagar TUDO!");
     console.log("[NET][INIT] confirmNuke:", confirmNuke, "| typeof:", typeof confirmNuke);
 
     if (confirmNuke) {
-
         console.log("[NET][CHECK] Usuário confirmou a exclusão em massa");
 
         const messagesCollection = collection(db, 'messages');
+        console.log("[NET][INIT] messagesCollection:", messagesCollection);
 
-        console.log("[NET][INIT] messagesCollection:", messagesCollection, "| typeof:", typeof messagesCollection);
-
-        getDocs(messagesCollection).then(snapshot => {
-
+        try {
+            const snapshot = await getDocs(messagesCollection);
             console.log("[NET][RETURN] Snapshot de messages recebido:", snapshot);
 
-            snapshot.forEach(doc => {
+            snapshot.forEach((document) => {
+                console.log("[NET][ITERATE] Deletando doc.id:", document.id);
 
-                console.log("[NET][ITERATE] Deletando doc.id:", doc.id);
-
-                doc.ref.delete().then(() => {
-
-                    console.log("[NET][UPDATE] Documento deletado com sucesso:", doc.id);
-
-                }).catch(deleteError => {
-
-                    console.error("[NET][ERROR] Erro ao deletar doc.id:", doc.id, "| Erro:", deleteError);
-                });
+                deleteDoc(doc(db, 'messages', document.id))
+                    .then(() => {
+                        console.log("[NET][UPDATE] Documento deletado com sucesso:", document.id);
+                    })
+                    .catch((deleteError) => {
+                        console.error("[NET][ERROR] Erro ao deletar doc.id:", document.id, "| Erro:", deleteError);
+                    });
             });
 
+            // Mensagem visual de sistema
             sendSystemMessage("💣 Banco apagado pelo admin.");
-
-            console.log("[NET][CALL] Mensagem de sistema enviada: Banco apagado pelo admin.");
-
-        }).catch(getError => {
-
+        } catch (getError) {
             console.error("[NET][ERROR] Erro ao obter snapshot de messages:", getError);
-
-        });
-
+        }
     } else {
-
         console.log("[NET][CHECK] Usuário cancelou a exclusão em massa");
     }
 }

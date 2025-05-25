@@ -194,3 +194,10 @@ export function showEditPopup(currentText, callback) {
     }  
     // Se cancelou → não executa nada, mantendo o texto original
 }
+
+
+
+export function sendSystemMessage(message) {
+    console.log("[SYSTEM][CALL] Mensagem de sistema enviada:", message);
+    alert(message);  // Ou use um mecanismo de exibição no chat
+}
