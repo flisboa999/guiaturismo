@@ -39,8 +39,11 @@ const functions = getFunctions(app, "us-central1");
 console.log("[SETUP][INIT] Inicializou getFunctions (Funções Cloud)");
 
 
-// Opcional: Inicializar Auth
-// export const auth = getAuth(app);
+// Instancia o módulo de autenticação do Firebase vinculado ao app → gerencia sessões, tokens e usuários
+const auth = getAuth(app); 
+
+// Cria provedor OAuth para login via conta Google → facilita autenticação segura e padronizada
+const provider = new GoogleAuthProvider();
 
 // Conecta automaticamente no emulador se estiver rodando localmente
 if (location.hostname === "localhost") {
@@ -66,4 +69,4 @@ const analytics = getAnalytics(app);
 console.log("[SETUP] Inicializou analytics");
 
 // Exportar o app, db, functions
-export { app, db, functions, analytics };
+export { app, db, functions, analytics , auth, provider };

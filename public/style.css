@@ -1,167 +1,143 @@
-/* Define estilo global: fonte moderna, layout centralizado, tema escuro */
+/* Fonte moderna e leve, layout centralizado, fundo escuro e texto claro → foco no contraste e legibilidade */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fonte limpa e legível */
-    margin: 0;
-    padding: 0;
-    background-color: #121212; /* Fundo escuro para contraste */
-    color: #e0e0e0; /* Texto claro para boa leitura */
-    display: flex; /* Centraliza o conteúdo */
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Ocupa toda a altura da tela */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fonte sem serifa, limpa */
+    margin: 0; padding: 0; /* Remove espaçamentos padrão */
+    background-color: #121212; /* Tema escuro */
+    color: #e0e0e0; /* Texto claro para contraste */
+    display: flex; justify-content: center; align-items: center; /* Centraliza vertical e horizontalmente */
+    height: 100vh; /* Ocupa toda a altura da viewport */
 }
 
-/* Container principal do chat → centralizado e com visual elegante */
+/* Container central do chat → largura confortável, estrutura flexível e visual com profundidade */
 .chat-container {
     width: 100%;
-    max-width: 600px; /* Limita largura para manter legibilidade */
-    background-color: #1e1e1e; /* Fundo do container mais claro que o body */
-    border-radius: 12px; /* Cantos arredondados para suavidade */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7); /* Sombra para profundidade */
+    max-width: 800px; /* Mais espaço para mensagens longas */
+    height: 90vh; /* Ocupa quase toda a tela, mantendo margens */
+    display: flex; flex-direction: column; justify-content: space-between; /* Layout vertical: mensagens + input */
+    background-color: #1e1e1e; /* Fundo levemente diferente do body */
+    border-radius: 12px; /* Cantos arredondados */
+    box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Sombra sutil para elevação */
     padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px; /* Espaçamento entre elementos internos */
 }
 
-/* Estilo do container do chat → aplica gradiente sutil e transição suave para efeito ao interagir */
-.chat-container {
-    background: linear-gradient(135deg, #1e1e1e, #2c2c2c); /* Gradiente escuro na diagonal para profundidade */
-    transition: box-shadow 0.3s ease; /* Suaviza a alteração de sombra no hover */
-}
-
-/* Ao passar o mouse sobre o container → adiciona sombra para criar efeito de elevação */
-.chat-container:hover {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); /* Sombra mais intensa, dando destaque ao container */
-}
-
-/* Área onde as mensagens são exibidas */
+/* Área de mensagens → expande dinamicamente, com rolagem automática para overflow */
 #chat-log {
-    background-color: #181818; /* Contraste sutil com container */
-    padding: 15px;
-    border-radius: 8px; /* Cantos arredondados */
-    height: 300px; /* Altura fixa com rolagem */
-    overflow-y: auto; /* Habilita scroll vertical */
-    display: flex;
-    flex-direction: column;
-    gap: 10px; /* Espaço entre as mensagens */
+    flex-grow: 1; /* Preenche o espaço restante entre input e topo */
+    overflow-y: auto; /* Habilita rolagem vertical quando necessário */
+    display: flex; flex-direction: column; gap: 10px; /* Empilha mensagens com espaçamento */
+    padding-right: 10px; /* Evita sobreposição com scrollbar */
 }
 
-/* Aplica animação de entrada suave para cada mensagem adicionada */
-#chat-log > div {
-    animation: fadeInUp 0.3s ease forwards; /* Suaviza a inserção das mensagens */
+/* Estilo base para mensagens: fundo escuro, padding e cantos arredondados, quebras de linha automáticas */
+.user-message, .bot-message {
+    background-color: #252525; /* Base escura para ambas */
+    padding: 12px 16px;
+    border-radius: 8px;
+    max-width: 75%; /* Limita largura para melhor leitura */
+    word-break: break-word; /* Evita overflow com palavras longas */
 }
 
-/* Define animação fadeInUp → mensagem sobe levemente ao aparecer */
-@keyframes fadeInUp {
-    from {
-        opacity: 0; /* Começa invisível */
-        transform: translateY(10px); /* Deslocamento inicial para baixo */
-    }
-    to {
-        opacity: 1; /* Fica visível */
-        transform: translateY(0); /* Posição original */
-    }
-}
-
-
-
-/* Personaliza a barra de rolagem do chat para combinar com o tema escuro e manter estética consistente */
-#chat-log {
-    scrollbar-width: thin; /* Barra fina em navegadores que suportam (Firefox) */
-    scrollbar-color: #6a11cb #1e1e1e; /* Cor do thumb (roxo) e track (fundo escuro) */
-}
-
-/* Define largura da scrollbar no Chrome, Edge e Safari */
-#chat-log::-webkit-scrollbar {
-    width: 8px; /* Barra estreita para visual discreto */
-}
-
-/* Estilo do trilho (track) da scrollbar */
-#chat-log::-webkit-scrollbar-track {
-    background: #1e1e1e; /* Mantém coerência com o fundo do chat */
-}
-
-/* Estilo do controle (thumb) da scrollbar */
-#chat-log::-webkit-scrollbar-thumb {
-    background: #6a11cb; /* Cor vibrante para destacar a barra de rolagem */
-    border-radius: 4px; /* Cantos arredondados para aparência suave */
-}
-
-/* Estilo das mensagens enviadas pelo usuário */
+/* Mensagem do usuário → alinhada à direita com tom mais claro */
 .user-message {
-    background-color: #333; /* Fundo escuro diferenciado */
-    padding: 10px 15px;
-    border-radius: 10px;
-    align-self: flex-end; /* Alinha à direita */
-    max-width: 80%; /* Evita que ocupe toda a largura */
-    word-break: break-word; /* Quebra palavras longas */
+    align-self: flex-end;
+    background-color: #333; /* Tom mais claro que o bot */
 }
 
-/* Estilo das mensagens enviadas pelo bot */
+/* Mensagem do bot → alinhada à esquerda com tom mais escuro */
 .bot-message {
-    background-color: #252525; /* Cor distinta das mensagens do usuário */
-    padding: 10px 15px;
-    border-radius: 10px;
-    align-self: flex-start; /* Alinha à esquerda */
-    max-width: 80%;
-    word-break: break-word;
+    align-self: flex-start;
+    background-color: #252525;
 }
 
-/* Área de input: input + botão alinhados lado a lado */
+/* Área de input → fixa no final do container, elementos lado a lado */
 .input-area {
     display: flex;
-    gap: 10px; /* Espaço entre o input e o botão */
+    gap: 10px; /* Espaçamento entre input e botão */
+    margin-top: 10px; /* Separação do chat-log */
 }
 
-/* Quando o input recebe foco → borda e brilho para destacar */
-#prompt-input:focus {
-    border: 2px solid #6a11cb; /* Cor roxa na borda */
-    box-shadow: 0 0 10px rgba(106, 17, 203, 0.5); /* Brilho suave */
+/* Input → estilo confortável, fundo escuro, sem borda, foco claro */
+#prompt-input {
+    flex-grow: 1; /* Ocupa todo o espaço disponível */
+    padding: 12px 16px;
+    border-radius: 8px; border: none;
+    background-color: #2c2c2c; color: #e0e0e0;
+    outline: none; /* Remove borda padrão ao focar */
+    font-size: 1rem;
+    box-sizing: border-box; /* Inclui padding na largura */
 }
 
-/* Estilo padrão do placeholder → cor e transição suave */
+/* Placeholder → cor suave e transição ao focar */
 #prompt-input::placeholder {
-    color: #888; /* Tom neutro e discreto */
-    opacity: 0.7; /* Visível, mas não chamativo */
-    transition: opacity 0.3s ease; /* Transição suave ao focar */
+    color: #888;
+    opacity: 0.7; /* Visível mas discreto */
+    transition: opacity 0.3s ease; /* Suaviza mudança de opacidade */
 }
 
-/* Quando o input recebe foco → placeholder fica mais transparente */
+/* Ao focar → placeholder fica mais transparente para destacar o texto digitado */
 #prompt-input:focus::placeholder {
-    opacity: 0.3; /* Menos destacado para priorizar o conteúdo digitado */
+    opacity: 0.3;
 }
 
-/* Estilo do botão de envio → aparência moderna e chamativa */
+/* Foco no input → borda roxa e leve brilho para indicar interação */
+#prompt-input:focus {
+    border: 2px solid #6a11cb;
+    box-shadow: 0 0 5px rgba(106, 17, 203, 0.5);
+}
+
+/* Botão de envio → integrado ao input com estilo chamativo e efeitos suaves */
 #send-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
+    padding: 12px 20px; border: none; border-radius: 8px;
     background: linear-gradient(45deg, #6a11cb, #2575fc); /* Gradiente vibrante */
-    color: #fff; /* Texto branco para contraste */
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease; /* Suaviza efeitos ao interagir */
+    color: #fff; cursor: pointer; font-size: 1rem;
+    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease; /* Efeitos suaves */
+    box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.3); /* Profundidade no botão */
 }
 
-/* Efeito visual quando o mouse passa sobre o botão */
+/* Hover no botão → leve zoom e sombra para indicar interação */
 #send-button:hover {
-    background: linear-gradient(45deg, #2575fc, #6a11cb); /* Inverte o gradiente */
-    transform: scale(1.05); /* Aumenta ligeiramente o tamanho */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Sombra sutil para destaque */
+    transform: scale(1.05); /* Amplia ligeiramente */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Estilo do indicador de loading → texto discreto */
+/* Select para tipo de mensagem → estilizado para combinar com tema */
+#message-type {
+    margin-top: 10px;
+    padding: 10px 15px;
+    border-radius: 8px; border: none;
+    background-color: #2c2c2c; color: #e0e0e0;
+    cursor: pointer; appearance: none; /* Remove estilo nativo */
+    transition: background 0.3s ease; /* Suaviza mudança no hover */
+}
+
+/* Hover no select → cor de fundo mais clara */
+#message-type:hover {
+    background-color: #3a3a3a;
+}
+
+/* Indicador de loading → discreto abaixo do input */
 #loading {
     text-align: center;
     font-size: 0.9em;
-    color: #888; /* Tom neutro para não chamar muita atenção */
+    color: #888;
+    margin-top: 10px;
 }
 
-/* Estilo do seletor de tipo de mensagem */
-#message-type {
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: none;
-    background-color: #2c2c2c; /* Fundo escuro coerente com o tema */
-    color: #e0e0e0; /* Texto claro para legibilidade */
+/* Scrollbar moderna → fina, com cores personalizadas que combinam com o tema */
+#chat-log {
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #6a11cb #1e1e1e; /* Thumb roxo, track escuro */
+}
+
+#chat-log::-webkit-scrollbar {
+    width: 8px; /* Barra estreita */
+}
+
+#chat-log::-webkit-scrollbar-track {
+    background: #1e1e1e; /* Fundo escuro da track */
+}
+
+#chat-log::-webkit-scrollbar-thumb {
+    background: #6a11cb; /* Thumb roxo para destaque */
+    border-radius: 4px; /* Suaviza as bordas */
 }
