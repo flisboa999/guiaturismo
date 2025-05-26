@@ -11,6 +11,12 @@ Este projeto foi desenvolvido como parte do **Projeto Integrador em Computação
 
 O sistema implementa um **Chat Público em tempo real** com integração à **API Gemini** para processamento de linguagem natural.
 
+Inicialmente a ideia do grupo foi que LLM seja fosse configurado para agir como um "guia turístico local" na cidade de Iporanga/SP.
+
+Entretanto, o projeto também foi pensado para ser usado como um Wrapper genérico de API de IA para processamento de linguagem natural + Chat público
+
+O objetivo maior é permitir aplicações diversas, com implementações customizadas, para que o LLM aja de acordo com os parâmetros pré-configurados pelo usuário (tom, system prompt para definir o contexto ou estilo da IA, moldar a personalidade e regras de resposta, etc.)
+
 ## ✅ Funcionalidades principais
 
 - ✅ **Chat Público:** mensagens são armazenadas no **Firebase Firestore** e exibidas para todos em tempo real.
