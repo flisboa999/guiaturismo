@@ -45,7 +45,7 @@ export function renderMessage(docId, data, chatLog, userRole, userName) {
     console.log(`[UI][INIT] Definiu ID: message-${docId} para messageElement`);
 
     // Cria a variável content que vai conter o texto formatado da mensagem.
-    let content = `<strong>${data.userName || 'Usuário'}:</strong> ${sanitize(data.prompt)}`;
+    let content = `<strong>${userName || 'Usuário'}:</strong> ${sanitize(data.prompt)}`;
 
     console.log("[UI][INIT] content criado com prompt:", content, "| typeof:", typeof content);
 

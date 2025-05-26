@@ -120,7 +120,10 @@ onAuthStateChanged(auth, (user) => {
         // Loga para rastreamento e conferência rápida
 
         userName = user.displayName;  
-        userEmail = user.email;  
+
+        console.log("[MAIN][CHECK] userName declarado: ", userName, "| typeof:", typeof userName);
+
+        userEmail = user.email;
         // Atualiza variáveis globais com dados do usuário atual
 
         defineUserRole(userEmail);  

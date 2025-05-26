@@ -128,7 +128,7 @@ export async function sendMessageChat(userMessage, promptInput, sendButton, user
             sessionId: crypto.randomUUID(), // Gera um ID de sessão seguro e único via Web Crypto API
             timestamp: serverTimestamp(),    // Timestamp gerado pelo servidor → evita inconsistência com o relógio do cliente
             userAgent: navigator.userAgent, // Registra informações sobre o dispositivo/navegador do usuário
-            userName: userName
+            userName: userName || 'Usuário'
         });
 
         console.log("[NET][SUCCESS] Mensagem enviada com sucesso para Firestore."); 
