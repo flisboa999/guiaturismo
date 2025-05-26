@@ -5,7 +5,7 @@ import { collection, query, orderBy, limit, onSnapshot } from "https://www.gstat
 import { db } from "./firebase-setup.js";
 
 
-import { removeRenderedMessage } from './ui.js';
+import { removeRenderedMessage, updateRenderedMessage } from './ui.js';
 
 // Referência à coleção "chats" no Firestore, onde as mensagens serão criadas, lidas e monitoradas em tempo real
 export const chatsCollection = collection(db, "chats");
