@@ -14,8 +14,6 @@ const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { initializeApp } = require("firebase-admin/app");
 const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 
-
-
 // Importa utilitário para acessar chaves secretas no Google Secret Manager
 const { defineSecret } = require("firebase-functions/params");
 
@@ -28,8 +26,6 @@ console.log("[INIT] Inicializando Firebase Admin SDK");
 const db = getFirestore();
 
 console.log("[INIT] Firestore conectado");
-
-
 
 // Define a variável da chave secreta da API Gemini via Secret Manager ( gerenciamento de chaves)
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
@@ -64,11 +60,13 @@ exports.sendMessage = onCall(
     const userInput = data?.data?.prompt;     // Texto enviado pelo usuário
     const sessionId = data?.data?.sessionId;  // ID da sessão do usuário
     const userAgent = data?.data?.userAgent;  // Info sobre navegador/dispositivo
+    const userName = data?.data?.userName;  // Info sobre username
 
     // Logs para verificar os dados recebidos
     console.log("[INIT] userInput:", userInput, "| typeof:", typeof userInput);
     console.log("[INIT] sessionId:", sessionId, "| typeof:", typeof sessionId);
     console.log("[INIT] userAgent:", userAgent, "| typeof:", typeof userAgent);
+    console.log("[INIT] userName:", userName, "| typeof:", typeof userName);
 
     // Na validação do userInput está vazio, não é string ou só tem espaços.
     if (!userInput || typeof userInput !== 'string' || userInput.trim() === '') {
@@ -119,7 +117,7 @@ exports.sendMessage = onCall(
         response: geminiOutput || null,            // esposta gerada ou null
         sessionId: sessionId || null,              // ID da sessão
         timestamp: FieldValue.serverTimestamp(),   // Timestamp do servidor
-        userAgent: userAgent || null,              // Info do cliente
+        userName: userName || null,              // Info do cliente
         // userId: context.auth ? context.auth.uid : null // ID do usuário autenticado ou null
       };
 
