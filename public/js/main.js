@@ -53,6 +53,11 @@ let userRole = '';  // Variável para role: admin ou user
 
 console.log("[MAIN][INIT] declarou userName, userEmail, userRole p/ manipular dados do usuário");
 
+//função utilitária pra checar se usuário está logado
+function isUserAuthenticated() {
+    return !!userEmail;  // Retorna true se userEmail estiver preenchido
+}
+
 // Função de autenticação
 function authenticateUser() {
 
@@ -134,11 +139,19 @@ onAuthStateChanged(auth, (user) => {
 // handleSendMessage - Função que decide o que fazer quando o usuário envia uma mensagem ()
 function handleSendMessage() {
 
-    console.log("[CALL] handleSendMessage chamada");
+
+    if (!isUserAuthenticated()) {
+        alert("Você precisa estar logado para enviar mensagens.");
+        console.log("[MAIN][CHECK]Usuário não autenticado → bloqueando envio.");
+        return;
+    }
+
+
+    console.log("[MAIN][CALL] handleSendMessage chamada");
 
     // Pega o texto que o usuário digitou no campo de input
     const userMessage = promptInput.value.trim();  
-    console.log("[INIT] userMessage capturado:", userMessage, "| typeof:", typeof userMessage);
+    console.log("[MAIN][INIT] userMessage capturado:", userMessage, "| typeof:", typeof userMessage);
 
     // Se a mensagem estiver vazia...
     if (!userMessage) {  

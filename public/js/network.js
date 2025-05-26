@@ -18,7 +18,7 @@ import { collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebase
 
 
 // Função assíncrona para enviar mensagem à Cloud Function do Firebase, aguardando resposta do Gemini
-export async function sendMessageToGemini(userMessage, promptInput, sendButton) {
+export async function sendMessageToGemini(userMessage, promptInput, sendButton, userName) {
 
     console.log("[NET][CALL] Função sendMessageToGemini chamada");  //Marca o início da função
 
@@ -55,7 +55,8 @@ export async function sendMessageToGemini(userMessage, promptInput, sendButton) 
         const payload = {
             prompt: userMessage,  // Mensagem que será enviada à API do Gemini
             sessionId: "sess-" + crypto.randomUUID(),  // Gera um ID de sessão aleatório para rastreamento
-            userAgent: navigator.userAgent  // Captura informações do navegador do usuário (para logging ou análise)
+            userAgent: navigator.userAgent, // Captura informações do navegador do usuário (para logging ou análise)
+            userName: userName
         };
 
         console.log("[NET][INIT] Payload criado :", payload , "| typeof:", typeof payload);
@@ -101,7 +102,7 @@ export async function sendMessageToGemini(userMessage, promptInput, sendButton) 
 
 // Função sendMessageChat → grava uma nova mensagem diretamente na coleção "chats" do Firestore
 // Usada para armazenar mensagens públicas enviadas pelo usuário, sem processamento da API Gemini
-export async function sendMessageChat(userMessage, promptInput, sendButton) {
+export async function sendMessageChat(userMessage, promptInput, sendButton, userName) {
 
     console.log("[NET][CALL] sendMessageChat foi chamada");
 
@@ -127,6 +128,7 @@ export async function sendMessageChat(userMessage, promptInput, sendButton) {
             sessionId: crypto.randomUUID(), // Gera um ID de sessão seguro e único via Web Crypto API
             timestamp: serverTimestamp(),    // Timestamp gerado pelo servidor → evita inconsistência com o relógio do cliente
             userAgent: navigator.userAgent, // Registra informações sobre o dispositivo/navegador do usuário
+            userName: userName
         });
 
         console.log("[NET][SUCCESS] Mensagem enviada com sucesso para Firestore."); 
