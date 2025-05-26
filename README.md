@@ -19,7 +19,7 @@ O objetivo maior é permitir aplicações diversas, com implementações customi
 
 ## ✅ Funcionalidades principais
 
-- ✅ **Chat Público:** mensagens são armazenadas no **Firebase Firestore** e exibidas para todos em tempo real.
+- ✅ **Chat Público:** mensagens são armazenadas no **Firebase Firestore (noSQL)** e exibidas para todos em tempo real.
 - ✅ **Mensagens com IA (Gemini):** integração com **Firebase Functions** que envia perguntas à **API Gemini** e exibe as respostas no chat.
 - ✅ **Autenticação Google:** apenas usuários autenticados podem enviar mensagens.
 - ✅ **Admin Controls:** usuários com perfil `admin` podem apagar todas as mensagens (`Nuke`).
@@ -40,7 +40,7 @@ O objetivo maior é permitir aplicações diversas, com implementações customi
 | Arquivo                | Função |
 |----------------------- |------- |
 | **firebase-setup.js**  | Configura Firebase (`auth`, `db`, `functions`). |
-| **network.js**         | Lida com envio de mensagens ao Firestore e à API Gemini. Inclui `sendMessageToGemini`, `sendMessageChat`, `editMessage`, `nukeDatabase`. |
+| **network.js**         | Lida com envio de mensagens ao Firestore  e à API Gemini. Inclui `sendMessageToGemini`, `sendMessageChat`, `editMessage`, `nukeDatabase`. |
 | **state.js**           | Gerencia `chatsCollection` e listeners de atualização (`initSnapshot`). |
 | **ui.js**              | Renderiza mensagens (`renderMessage`), controles administrativos, e gerencia interface (`showLoading`, `showEditPopup`). |
 | **main.js**            | Orquestra autenticação, define roles (`userRole`), e gerencia fluxo principal. |
