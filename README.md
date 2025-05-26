@@ -1,6 +1,10 @@
 
 # 🧩 Chat Público com Firebase + Firestore + Gemini API
 
+🔥 Projeto acadêmico para demonstrar integração Full Serverless: Chat Público com database em tempo real + AI com Firebase e LLM Gemini.
+
+https://www.youtube.com/watch?v=pquHcxghVE8
+
 ## ✅ Visão Geral
 
 Este projeto foi desenvolvido como parte do **Projeto Integrador em Computação III — DRP06 — Turma 001** da **UNIVESP (Universidade Virtual do Estado de São Paulo)**.
@@ -18,7 +22,7 @@ O sistema implementa um **Chat Público em tempo real** com integração à **AP
 
 **Backend:**
 - **Firebase Functions:** comunicação segura com API Gemini.
-- **Firestore Database:** persistência de mensagens e respostas.
+- **Firestore Database (noSQL):** persistência de mensagens e respostas.
 
 **Frontend:**
 - **JavaScript Vanilla:** toda a lógica implementada com modularização.
@@ -78,4 +82,5 @@ O sistema implementa um **Chat Público em tempo real** com integração à **AP
 
 - Melhorar sistema de roles e permissões.
 - Adicionar múltiplos canais de chat.
+- Adicionar novas APIs de outros LLM (DeepSeek, ChatGPT, Claude,etc.)
 - Interface com frameworks modernos (React, Vue).
