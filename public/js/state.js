@@ -4,6 +4,9 @@ import { collection, query, orderBy, limit, onSnapshot } from "https://www.gstat
 // db → instância configurada do Firestore, usada para todas as operações no banco de dados
 import { db } from "./firebase-setup.js";
 
+
+import { removeRenderedMessage } from './ui.js';
+
 // Referência à coleção "chats" no Firestore, onde as mensagens serão criadas, lidas e monitoradas em tempo real
 export const chatsCollection = collection(db, "chats");
 

@@ -68,7 +68,13 @@ export async function sendMessageToGemini(userMessage, promptInput, sendButton) 
         console.log("[NET][INIT] Iniciando variável result para aguardar resposta");
 
         // Executa a chamada assíncrona à função do backend, passando o payload
-        const result = await callSendMessage(payload);  
+        const result = await callSendMessage(payload);
+
+        if (!result) {
+
+            console.error("[NET][ERROR] Nãp conseguiu obter result: ", result, "| typeof:", typeof result);
+    return;
+}
 
         console.log("[NET][RETURN] Resposta recebida (result): ", result ,"| typeof:", typeof result);
 

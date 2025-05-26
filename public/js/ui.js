@@ -40,6 +40,10 @@ export function renderMessage(docId, data, chatLog, userRole) {
     // Adiciona a classe base 'message'
     messageElement.classList.add('message');
 
+    messageElement.id = `message-${docId}`;  
+
+    console.log(`[UI][INIT] Definiu ID: message-${docId} para messageElement`);
+
     // Cria a variável content que vai conter o texto formatado da mensagem.
     let content = `<strong>Usuário:</strong> ${sanitize(data.prompt)}`;
 
@@ -193,6 +197,24 @@ export function showEditPopup(currentText, callback) {
         // Passa o texto editado e limpo (sem espaços extras) para a função de atualização
     }  
     // Se cancelou → não executa nada, mantendo o texto original
+}
+
+
+
+// removeRenderedMessage → Remove a mensagem do DOM com base no docId
+export function removeRenderedMessage(docId) {
+    console.log(`[UI][CALL] removeRenderedMessage para docId: ${docId}`);
+    
+    const el = document.getElementById(`message-${docId}`);  
+    // Localiza a div da mensagem pelo ID
+
+    if (el) {
+        el.remove();  
+        // Remove do DOM
+        console.log(`[UI][UPDATE] Mensagem ${docId} removida do chatLog`);
+    } else {
+        console.warn(`[UI][WARN] Elemento com ID message-${docId} não encontrado para remoção`);
+    }
 }
 
 

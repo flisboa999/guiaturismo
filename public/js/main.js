@@ -42,7 +42,7 @@ sendButton.addEventListener('click', handleSendMessage);
 promptInput.addEventListener('keypress', function(event) {
 
     // Se a tecla for "Enter" → envia a mensagem
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter'  && !event.shiftKey) {
         handleSendMessage(); // Aqui usamos () → executa a função imediatamente
     }
 });
